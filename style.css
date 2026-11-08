@@ -460,6 +460,11 @@ h1 {
 .scene-sparkle { position: absolute; right: 20%; bottom: 118px; color: #e5b763; font-size: 23px; animation: sparkle 3s ease-in-out infinite; }
 .santa-figure { display: none; transform-box: fill-box; transform-origin: center bottom; }
 body.has-santa-season.santa-rings .santa-figure { display: initial; animation: santa-sneak 8.2s cubic-bezier(.32,.08,.23,1) both; }
+.santa-wave-arm, .santa-sack-group { transform-box: fill-box; }
+.santa-wave-arm { transform-origin: 95% 95%; }
+.santa-sack-group { transform-origin: 50% 25%; }
+body.has-santa-season.santa-rings .santa-wave-arm { animation: santa-greeting 8.2s ease-in-out both; }
+body.has-santa-season.santa-rings .santa-sack-group { animation: santa-sack-swing 8.2s ease-in-out both; }
 .santa-sack { fill: #b78155; stroke: #926b51; stroke-width: 2; }
 .santa-sack-tie { fill: #d3a66e; }
 .santa-coat { fill: #c94f59; stroke: #9e3f50; stroke-width: 2; }
@@ -626,6 +631,25 @@ body.snow-season .snowfall { opacity: 1; }
   42% { opacity: 1; transform: translateX(0); }
   52%, 70% { opacity: 1; transform: translateX(0); }
   100% { opacity: 0; transform: translateX(450%); }
+}
+@keyframes santa-greeting {
+  0%, 42% { transform: rotate(0); }
+  44% { transform: rotate(-17deg); }
+  46% { transform: rotate(13deg); }
+  48% { transform: rotate(-15deg); }
+  50% { transform: rotate(10deg); }
+  52%, 55% { transform: rotate(0); }
+  57% { transform: rotate(-14deg); }
+  59% { transform: rotate(0); }
+  61% { transform: rotate(-14deg); }
+  63%, 100% { transform: rotate(0); }
+}
+@keyframes santa-sack-swing {
+  0%, 12%, 30%, 42%, 52%, 100% { transform: rotate(0); }
+  20%, 36% { transform: rotate(-7deg); }
+  26%, 40% { transform: rotate(6deg); }
+  57%, 61% { transform: rotate(-4deg); }
+  59%, 63% { transform: rotate(3deg); }
 }
 @keyframes bell-ring { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-24deg); } 75% { transform: rotate(24deg); } }
 @keyframes laugh-pop { 0%, 12%, 82%, 100% { opacity: 0; transform: translateY(8px) scale(.8); } 20%, 73% { opacity: 1; transform: translateY(0) scale(1); } }

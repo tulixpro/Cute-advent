@@ -8,9 +8,9 @@ Eine kostenlose, statische Jahreszeiten-Countdown-Seite mit HTML, CSS und Vanill
 
 ## Auf GitHub Pages veröffentlichen
 
-Der Workflow unter `.github/workflows/pages.yml` veröffentlicht die Seite automatisch, wenn Änderungen nach `main` gepusht werden, und aktiviert GitHub Pages beim ersten Lauf. Er kann außerdem im Tab **Actions** manuell gestartet werden.
+Der Workflow unter `.github/workflows/pages.yml` veröffentlicht die Seite automatisch, wenn Änderungen nach `main` gepusht werden. Er kann außerdem im Tab **Actions** manuell gestartet werden. GitHub Pages ist für dieses Repository bereits auf **GitHub Actions** eingestellt.
 
-Nach dem ersten erfolgreichen Lauf ist die Seite unter folgender Adresse erreichbar:
+Wenn du das Projekt in ein anderes Repository kopierst, wähle dort einmal unter **Settings → Pages** als Build and deployment source **GitHub Actions** aus. Die Seite ist unter folgender Adresse erreichbar:
 
 <https://tulixpro.github.io/Cute-advent/>
 

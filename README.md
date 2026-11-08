@@ -2,6 +2,8 @@
 
 Eine kostenlose, statische Jahreszeiten-Countdown-Seite mit HTML, CSS und Vanilla JavaScript. Es werden keine externen APIs, Bibliotheken oder kostenpflichtigen Assets verwendet.
 
+Nachts erscheinen eine sanft eingeblendete Winter-Bergkulisse und ein Sternenhimmel. Über den Knopf **Ins Haus gehen** kannst du das Wohnzimmer besuchen, das Schlitten-Minispiel spielen und im Advent die Tages-Türchen öffnen.
+
 ## Lokal öffnen
 
 `index.html` direkt im Browser öffnen. Für lokale Tests kann die Seite auch von einem beliebigen statischen HTTP-Server bereitgestellt werden.

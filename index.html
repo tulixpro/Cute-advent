@@ -11,6 +11,34 @@
 </head>
 <body>
   <div class="season-wash" aria-hidden="true"></div>
+  <div class="night-scenery" aria-hidden="true">
+    <svg viewBox="0 0 1600 520" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <linearGradient id="mountain-snow" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#f8fbff"/>
+          <stop offset="1" stop-color="#c9d8ee"/>
+        </linearGradient>
+        <linearGradient id="mountain-shadow" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0" stop-color="#7385aa"/>
+          <stop offset="1" stop-color="#46577f"/>
+        </linearGradient>
+      </defs>
+      <circle class="night-moon" cx="1350" cy="55" r="34"/>
+      <g class="night-stars">
+        <circle cx="170" cy="92" r="2"/><circle cx="328" cy="154" r="2.5"/><circle cx="510" cy="73" r="2"/>
+        <circle cx="714" cy="130" r="2"/><circle cx="910" cy="66" r="2.5"/><circle cx="1104" cy="167" r="2"/>
+        <circle cx="1460" cy="198" r="2.5"/><path d="M228 202v12m-6-6h12M1000 202v12m-6-6h12"/>
+        <path d="M602 166v10m-5-5h10M1232 52v12m-6-6h12"/>
+      </g>
+      <path class="mountain-back" d="m0 390 180-176 91 94 174-192 191 206 138-130 205 203 181-198 164 165 135-122 141 143v137H0Z"/>
+      <path class="mountain-snowcap" d="m180 214 47 49-33-10-25 24-19-4zm265-98 59 64-43-13-31 28-28-14zm329 146 48-70 54 74-43-18-26 20zm321-60 64-69 64 82-45-20-34 25zm299 20 47-45 44 43-38-11-25 19z"/>
+      <path class="mountain-front" d="m0 421 170-116 132 94 176-127 174 145 146-112 174 111 164-131 143 122 131-91 190 117v87H0Z"/>
+      <path class="mountain-fore-snow" d="m170 305 51 35-39-8-27 21-24-11zm308-33 47 44-37-12-28 18-22-9zm320 145 51-39 49 42-39-13-31 17zm348-136 45 38-37-11-24 17-22-11zm297 31 44 37-36-11-21 17-20-10z"/>
+      <g class="mountain-pines">
+        <path d="m86 465 24-74 24 74h-15l23 41H78l23-41zm113 19 18-56 18 56h-11l17 30h-49l17-30zm1036-24 25-77 25 77h-15l23 41h-66l23-41zm124 21 20-62 20 62h-12l18 33h-52l18-33zm133-9 24-74 24 74h-15l22 40h-62l22-40z"/>
+      </g>
+    </svg>
+  </div>
   <div class="snowfall" id="snowfall" aria-hidden="true"></div>
   <div class="surprise-layer" id="surprise-layer" aria-hidden="true"></div>
   <div class="flight-layer" id="flight-layer" aria-hidden="true">
@@ -183,6 +211,77 @@
       <span class="scene-sparkle">✦</span>
     </div>
     </div>
+
+    <button class="house-entry-button" id="house-entry" type="button" aria-haspopup="dialog" aria-controls="house-room">
+      <span aria-hidden="true">🚪</span><span data-i18n="houseButton">Ins Haus gehen</span><span class="house-entry-arrow" aria-hidden="true">↗</span>
+    </button>
+
+    <dialog class="house-room" id="house-room" aria-labelledby="room-title">
+      <div class="room-shell">
+        <header class="room-header">
+          <div>
+            <p class="room-kicker" data-i18n="roomKicker">EIN PLÄTZCHEN ZUM AUFWÄRMEN</p>
+            <h2 id="room-title" data-i18n="roomTitle">Willkommen im warmen Zuhause!</h2>
+            <p class="room-subtitle" data-i18n="roomSubtitle">Draußen tanzt der Schnee. Drinnen warten Lichter, Spiele und Weihnachtszauber.</p>
+          </div>
+          <button class="room-close" id="room-close" type="button" aria-label="Haus schließen" data-i18n-aria="closeHouse">×</button>
+        </header>
+
+        <div class="room-panorama" aria-label="Gemütliches Wohnzimmer mit Tannenbaum und Fernseher" data-i18n-aria="roomAria">
+          <div class="room-window">
+            <span class="window-moon" aria-hidden="true">☾</span>
+            <span class="window-snow window-snow-one" aria-hidden="true">❄</span>
+            <span class="window-snow window-snow-two" aria-hidden="true">✦</span>
+            <span class="window-mountains" aria-hidden="true"></span>
+          </div>
+          <div class="room-lamp" aria-hidden="true"><span></span><i></i></div>
+          <div class="room-tree" aria-label="Festlich geschmückter Tannenbaum">
+            <span class="tree-star" aria-hidden="true">★</span>
+            <span class="tree-layer tree-layer-one"></span><span class="tree-layer tree-layer-two"></span><span class="tree-layer tree-layer-three"></span>
+            <span class="tree-trunk-indoor"></span>
+            <span class="tree-bauble-indoor bauble-a"></span><span class="tree-bauble-indoor bauble-b"></span><span class="tree-bauble-indoor bauble-c"></span>
+            <span class="tree-present present-a" aria-hidden="true">🎁</span><span class="tree-present present-b" aria-hidden="true">🎁</span>
+          </div>
+          <div class="room-sofa" aria-hidden="true"><span></span><i></i><b></b></div>
+          <div class="room-tv-area">
+            <div class="tv-frame"><div class="tv-screen"><span>❄</span><i>★</i><b>✦</b></div></div>
+            <div class="tv-feet"></div>
+            <div class="tv-console" aria-label="Spielkonsole"><span></span><i></i><b></b></div>
+            <p data-i18n="roomTv">Der kleine Spieleabend</p>
+          </div>
+          <div class="room-rug" aria-hidden="true"></div>
+        </div>
+
+        <div class="room-activities">
+          <section class="sled-game" aria-labelledby="game-title">
+            <div class="activity-heading">
+              <span class="activity-icon" aria-hidden="true">🛷</span>
+              <div><h3 id="game-title" data-i18n="gameTitle">Schlittenfahrt</h3><p data-i18n="gameInstructions">Weiche den Tannen aus! Mit ← → oder den Knöpfen lenken.</p></div>
+            </div>
+            <canvas class="sled-canvas" id="sled-canvas" width="640" height="300" role="img" aria-label="Schlitten-Spiel. Mit den Pfeiltasten nach links und rechts ausweichen." data-i18n-aria="canvasLabel"></canvas>
+            <div class="game-controls">
+              <p class="game-status" id="game-status" aria-live="polite"></p>
+              <div class="game-buttons">
+                <div class="steer-buttons" aria-label="Schlitten lenken" data-i18n-aria="steerLabel">
+                  <button class="steer-button" type="button" data-steer="-1" aria-label="Nach links lenken" data-i18n-aria="steerLeft">←</button>
+                  <button class="steer-button" type="button" data-steer="1" aria-label="Nach rechts lenken" data-i18n-aria="steerRight">→</button>
+                </div>
+                <button class="game-start" id="game-start" type="button" data-i18n="gameStart">Los geht's!</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="advent-calendar" aria-labelledby="calendar-title">
+            <div class="activity-heading">
+              <span class="activity-icon" aria-hidden="true">🎁</span>
+              <div><h3 id="calendar-title" data-i18n="calendarTitle">Der kleine Adventskalender</h3><p id="calendar-intro"></p></div>
+            </div>
+            <div class="calendar-grid" id="calendar-grid" aria-label="Adventskalender mit 24 Türchen" data-i18n-aria="calendarAria"></div>
+            <p class="calendar-note" id="calendar-note" aria-live="polite" hidden></p>
+          </section>
+        </div>
+      </div>
+    </dialog>
 
     <section class="season-guide" aria-labelledby="guide-title">
       <p class="guide-kicker" data-i18n="guideKicker">KLEINE VORFREUDE FÜRS GANZE JAHR</p>

@@ -29,6 +29,18 @@ const values = {
   seconds: document.querySelector("#seconds")
 };
 
+const houseElements = {
+  dialog: document.querySelector("#house-room"),
+  entry: document.querySelector("#house-entry"),
+  close: document.querySelector("#room-close"),
+  canvas: document.querySelector("#sled-canvas"),
+  gameStatus: document.querySelector("#game-status"),
+  gameStart: document.querySelector("#game-start"),
+  calendar: document.querySelector("#calendar-grid"),
+  calendarIntro: document.querySelector("#calendar-intro"),
+  calendarNote: document.querySelector("#calendar-note")
+};
+
 const themes = {
   nikolaus: { accent: "#bd8067", soft: "#f8e9dc" },
   christmas: { accent: "#8da98d", soft: "#eaf2e8" },
@@ -76,6 +88,51 @@ const surprises = {
 const translations = {
   de: {
     brand: "Kleine Jahreszeiten-Magie", languageLabel: "Sprache auswählen",
+    houseButton: "Ins Haus gehen", roomKicker: "EIN PLÄTZCHEN ZUM AUFWÄRMEN",
+    roomTitle: "Willkommen im warmen Zuhause!",
+    roomSubtitle: "Draußen tanzt der Schnee. Drinnen warten Lichter, Spiele und Weihnachtszauber.",
+    closeHouse: "Haus schließen", roomAria: "Gemütliches Wohnzimmer mit Tannenbaum und Fernseher",
+    roomTv: "Der kleine Spieleabend", gameTitle: "Schlittenfahrt",
+    gameInstructions: "Weiche den Tannen aus! Mit ← → oder den Knöpfen lenken.",
+    gameStart: "Los geht's!", gameRestart: "Nochmal fahren",
+    gameReady: "Bist du bereit für eine kleine Schlittenfahrt?",
+    gameOver: "Oh! Ein Schneehügel! Punkte:",
+    gameScore: "Punkte",
+    canvasLabel: "Schlitten-Spiel. Mit den Pfeiltasten nach links und rechts ausweichen.",
+    steerLabel: "Schlitten lenken", steerLeft: "Nach links lenken", steerRight: "Nach rechts lenken",
+    calendarTitle: "Der kleine Adventskalender",
+    calendarAria: "Adventskalender mit 24 Türchen",
+    calendarDoor: "Türchen {day}",
+    calendarWait: "Die erste Tür öffnet sich am {date} – noch {days} Tage!",
+    calendarReady: "Heute ist Türchen {day} dran. Viel Freude beim Öffnen!",
+    calendarFinished: "Alle 24 Türchen warten auf dich. Such dir eins aus!",
+    calendarLocked: "Dieses Türchen ist noch verschlossen – schau an seinem Tag wieder vorbei! 🔒",
+    calendarGift: [
+      "Ein winziger Wichtelgruß für dich: Du machst die Welt ein bisschen heller! ✨",
+      "Heute gibt es eine Tasse warmen Kakao und eine extra kuschelige Decke. ☕",
+      "Ein kleines Glücks-Sternchen begleitet dich durch den Tag. ⭐",
+      "Der Wichtel schenkt dir einen ruhigen Moment zum Durchatmen. 💛",
+      "Hinter dem Türchen versteckt sich ein Schneeflockentanz! ❄️",
+      "Du bist genau richtig, so wie du bist. Das wollte der Wichtel dir sagen. 💌",
+      "Ein winziger Rentier-Keks ist heute nur für dich. 🍪",
+      "Lass heute etwas Glitzer in deinen Tag – du hast es verdient! ✨",
+      "Der Wichtel wünscht dir ein Lächeln, das bis zu den Sternen reicht. 😊",
+      "Heute ist ein wunderbarer Tag für eine kleine Pause. 🧣",
+      "Eine Schneeflocke hat dir ein geheimes Winterkompliment gebracht. ❄️",
+      "Die halbe Adventszeit ist geschafft – du machst das toll! 🎄",
+      "Der Wichtel hat dir ein bisschen Weihnachtszauber eingepackt. 🎁",
+      "Heute darfst du besonders stolz auf dich sein. 🌟",
+      "Ein kleiner Wunsch ist unterwegs zu dir. 💫",
+      "Der Wichtel lässt ein paar Glitzerkrümel für dich da. ✨",
+      "Zeit für eine Umarmung – auch eine selbstgemachte zählt! 🤗",
+      "Hinter dem Türchen wartet ein freundliches Rentier-Winken. 🦌",
+      "Du hast schon so viel geschafft. Der Wichtel klatscht für dich! 👏",
+      "Mach es dir gemütlich und genieße einen kleinen Wohlfühlmoment. 🕯️",
+      "Ein lieber Gedanke fliegt heute nur für dich durchs Winterwunderland. 💌",
+      "Nur noch ein paar Tage bis zum Weihnachtszauber! 🎄",
+      "Der Wichtel schickt dir eine Handvoll Sternenstaub. ✨",
+      "Frohe Weihnachten! Du bist das schönste Geschenk. ❤️"
+    ],
     days: "Tage", hours: "Stunden", minutes: "Minuten", seconds: "Sekunden",
     guideKicker: "KLEINE VORFREUDE FÜRS GANZE JAHR",
     guideTitle: "Was bringt die nächste Zeit?",
@@ -132,6 +189,51 @@ const translations = {
   },
   en: {
     brand: "Little Seasonal Magic", languageLabel: "Choose language",
+    houseButton: "Step inside", roomKicker: "A LITTLE PLACE TO WARM UP",
+    roomTitle: "Welcome to our cozy home!",
+    roomSubtitle: "Snow is dancing outside. Inside, there are twinkly lights, games, and Christmas magic.",
+    closeHouse: "Close the house", roomAria: "Cozy living room with a Christmas tree and television",
+    roomTv: "A little game night", gameTitle: "Sleigh ride",
+    gameInstructions: "Dodge the trees! Steer with ← → or the buttons.",
+    gameStart: "Let's ride!", gameRestart: "Ride again",
+    gameReady: "Ready for a little sleigh ride?",
+    gameOver: "Oh! A snowy bump! Score:",
+    gameScore: "Score",
+    canvasLabel: "Sleigh game. Dodge left and right with the arrow keys.",
+    steerLabel: "Steer the sleigh", steerLeft: "Steer left", steerRight: "Steer right",
+    calendarTitle: "The little advent calendar",
+    calendarAria: "Advent calendar with 24 little doors",
+    calendarDoor: "Door {day}",
+    calendarWait: "The first door opens on {date} — just {days} days to go!",
+    calendarReady: "It's door {day}'s turn today. Enjoy opening it!",
+    calendarFinished: "All 24 doors are waiting for you. Pick one!",
+    calendarLocked: "This little door is still locked — come back on its day! 🔒",
+    calendarGift: [
+      "A tiny elf note for you: you make the world a little brighter! ✨",
+      "Today brings a cup of warm cocoa and an extra-cozy blanket. ☕",
+      "A little lucky star will keep you company today. ⭐",
+      "The elf is giving you a quiet moment to take a deep breath. 💛",
+      "A snowflake dance is hiding behind today's door! ❄️",
+      "The elf wanted you to know: you are just right as you are. 💌",
+      "A tiny reindeer cookie is just for you today. 🍪",
+      "Let a little sparkle into your day — you deserve it! ✨",
+      "The elf is wishing you a smile that reaches the stars. 😊",
+      "Today is a lovely day for a little break. 🧣",
+      "A snowflake brought you a secret winter compliment. ❄️",
+      "Halfway through advent — you're doing wonderfully! 🎄",
+      "The elf has wrapped up a little Christmas magic for you. 🎁",
+      "Today, you get to feel extra proud of yourself. 🌟",
+      "A little wish is on its way to you. 💫",
+      "The elf left a few sparkly crumbs for you. ✨",
+      "Time for a hug — giving yourself one counts too! 🤗",
+      "A friendly reindeer wave is waiting behind today's door. 🦌",
+      "You've done so much already. The elf is clapping for you! 👏",
+      "Get comfy and enjoy a little moment of coziness. 🕯️",
+      "A kind thought is flying through the winter wonderland just for you. 💌",
+      "Only a few more days until Christmas magic! 🎄",
+      "The elf is sending you a handful of stardust. ✨",
+      "Merry Christmas! You are the loveliest gift. ❤️"
+    ],
     days: "Days", hours: "Hours", minutes: "Minutes", seconds: "Seconds",
     guideKicker: "A LITTLE SOMETHING TO LOOK FORWARD TO",
     guideTitle: "What magic is coming next?",
@@ -315,6 +417,7 @@ function updatePage(now, season, atMidnight = false) {
   elements.flightLaugh.textContent = language === "de" ? "Ho ho ho!" : "Ho ho ho!";
   updateSoundControl();
   updateTheme(season);
+  updateHouseLanguage(now);
   applyTodaysPrank(now, atMidnight);
 }
 
@@ -495,6 +598,308 @@ function changeHouseLights() {
 
   window.setTimeout(changeHouseLights, 7000 + Math.random() * 15000);
 }
+
+function formatMessage(template, valuesToReplace) {
+  return template.replace(/\{(\w+)\}/g, (match, key) => (
+    Object.hasOwn(valuesToReplace, key) ? valuesToReplace[key] : match
+  ));
+}
+
+let openedCalendarYear = null;
+let openedCalendarDoors = new Set();
+let selectedCalendarDay = null;
+
+function readOpenedCalendarDoors(year) {
+  try {
+    const saved = JSON.parse(localStorage.getItem(`jahreszeiten-advent-${year}`) || "[]");
+    return new Set(Array.isArray(saved) ? saved.filter((day) => Number.isInteger(day) && day >= 1 && day <= 24) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function updateCalendar(now) {
+  const copy = translations[language];
+  const year = now.getFullYear();
+  if (openedCalendarYear !== year) {
+    openedCalendarYear = year;
+    openedCalendarDoors = readOpenedCalendarDoors(year);
+    selectedCalendarDay = null;
+  }
+
+  const availableDay = now.getMonth() === 11 ? Math.min(now.getDate(), 24) : 0;
+  if (availableDay === 0) {
+    const openingDate = localDate(year, 11, 1);
+    const daysUntil = Math.max(0, Math.ceil((openingDate.getTime() - now.getTime()) / 86400000));
+    const formattedDate = new Intl.DateTimeFormat(language === "de" ? "de-DE" : "en-GB", {
+      day: "numeric", month: "long"
+    }).format(openingDate);
+    houseElements.calendarIntro.textContent = formatMessage(copy.calendarWait, { date: formattedDate, days: daysUntil });
+  } else if (availableDay < 24) {
+    houseElements.calendarIntro.textContent = formatMessage(copy.calendarReady, { day: availableDay });
+  } else {
+    houseElements.calendarIntro.textContent = copy.calendarFinished;
+  }
+
+  houseElements.calendar.setAttribute("aria-label", copy.calendarAria);
+  const fragment = document.createDocumentFragment();
+  for (let day = 1; day <= 24; day += 1) {
+    const door = document.createElement("button");
+    door.className = "calendar-door";
+    door.type = "button";
+    door.textContent = String(day);
+    door.disabled = day > availableDay;
+    door.classList.toggle("is-today", day === availableDay && availableDay > 0);
+    door.classList.toggle("is-opened", openedCalendarDoors.has(day));
+    door.setAttribute("aria-label", formatMessage(copy.calendarDoor, { day }));
+    door.dataset.day = String(day);
+    fragment.append(door);
+  }
+  houseElements.calendar.replaceChildren(fragment);
+
+  if (selectedCalendarDay !== null) {
+    houseElements.calendarNote.textContent = copy.calendarGift[selectedCalendarDay - 1];
+    houseElements.calendarNote.hidden = false;
+  }
+}
+
+function updateHouseLanguage(now) {
+  const copy = translations[language];
+  document.querySelectorAll("[data-i18n-aria]").forEach((node) => {
+    const key = node.dataset.i18nAria;
+    node.setAttribute("aria-label", copy[key]);
+  });
+  updateCalendar(now);
+  if (!sledGame.running) houseElements.gameStatus.textContent = copy.gameReady;
+  houseElements.gameStart.textContent = sledGame.running ? copy.gameStart : (sledGame.hasPlayed ? copy.gameRestart : copy.gameStart);
+}
+
+const sledGame = {
+  context: houseElements.canvas.getContext("2d"),
+  running: false,
+  hasPlayed: false,
+  animationFrame: 0,
+  lastFrame: 0,
+  spawnElapsed: 0,
+  lane: 1,
+  obstacles: [],
+  score: 0,
+  width: 0,
+  height: 0,
+  pixelRatio: 1
+};
+
+function resizeSledCanvas() {
+  const bounds = houseElements.canvas.getBoundingClientRect();
+  if (!bounds.width || !bounds.height) return;
+  sledGame.width = bounds.width;
+  sledGame.height = bounds.height;
+  sledGame.pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+  houseElements.canvas.width = Math.round(bounds.width * sledGame.pixelRatio);
+  houseElements.canvas.height = Math.round(bounds.height * sledGame.pixelRatio);
+  sledGame.context.setTransform(sledGame.pixelRatio, 0, 0, sledGame.pixelRatio, 0, 0);
+  drawSledScene();
+}
+
+function drawSledScene() {
+  if (!sledGame.width || !sledGame.height) return;
+  const { context: ctx, width, height } = sledGame;
+  const gradient = ctx.createLinearGradient(0, 0, 0, height);
+  gradient.addColorStop(0, "#dce9f2");
+  gradient.addColorStop(.58, "#f5f8fa");
+  gradient.addColorStop(1, "#e5eef4");
+  ctx.clearRect(0, 0, width, height);
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.fillStyle = "rgba(255,255,255,.82)";
+  ctx.beginPath();
+  ctx.moveTo(0, height * .48);
+  ctx.lineTo(width * .2, height * .25);
+  ctx.lineTo(width * .37, height * .49);
+  ctx.lineTo(width * .59, height * .17);
+  ctx.lineTo(width * .79, height * .5);
+  ctx.lineTo(width, height * .29);
+  ctx.lineTo(width, height);
+  ctx.lineTo(0, height);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = "#edf2f5";
+  ctx.beginPath();
+  ctx.moveTo(width * .19, height);
+  ctx.lineTo(width * .39, height * .16);
+  ctx.lineTo(width * .61, height * .16);
+  ctx.lineTo(width * .81, height);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = "rgba(162,185,201,.58)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(width * .39, height * .16);
+  ctx.lineTo(width * .19, height);
+  ctx.moveTo(width * .61, height * .16);
+  ctx.lineTo(width * .81, height);
+  ctx.stroke();
+
+  const laneCenters = [width * .38, width * .5, width * .62];
+  ctx.setLineDash([9, 12]);
+  ctx.strokeStyle = "rgba(179,197,208,.42)";
+  ctx.lineWidth = 1;
+  for (const laneX of [width * .44, width * .56]) {
+    ctx.beginPath();
+    ctx.moveTo(laneX, height * .4);
+    ctx.lineTo(laneX, height);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  for (const obstacle of sledGame.obstacles) {
+    ctx.font = `${Math.max(20, width * .055)}px "Segoe UI Emoji", sans-serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(obstacle.kind === "tree" ? "🌲" : "❄️", laneCenters[obstacle.lane], obstacle.y);
+  }
+
+  const sledY = height * .79;
+  ctx.font = `${Math.max(30, width * .075)}px "Segoe UI Emoji", sans-serif`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("🛷", laneCenters[sledGame.lane], sledY);
+
+  ctx.fillStyle = "#687a8b";
+  ctx.font = "700 12px 'Trebuchet MS', sans-serif";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "top";
+  ctx.fillText(`${translations[language].gameScore}: ${Math.floor(sledGame.score)}`, 12, 12);
+  if (!sledGame.running && !sledGame.hasPlayed) {
+    ctx.fillStyle = "rgba(70, 87, 108, .7)";
+    ctx.font = "600 12px 'Trebuchet MS', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(translations[language].gameReady, width / 2, height * .57);
+  }
+}
+
+function setSledLane(direction) {
+  if (!sledGame.running) return;
+  sledGame.lane = Math.max(0, Math.min(2, sledGame.lane + direction));
+  drawSledScene();
+}
+
+function finishSledRide() {
+  sledGame.running = false;
+  sledGame.hasPlayed = true;
+  window.cancelAnimationFrame(sledGame.animationFrame);
+  const copy = translations[language];
+  houseElements.gameStatus.textContent = `${copy.gameOver} ${Math.floor(sledGame.score)}.`;
+  houseElements.gameStart.textContent = copy.gameRestart;
+  drawSledScene();
+}
+
+function runSledFrame(timestamp) {
+  if (!sledGame.running) return;
+  const delta = Math.min((timestamp - sledGame.lastFrame) / 1000, .05);
+  sledGame.lastFrame = timestamp;
+  sledGame.spawnElapsed += delta;
+  sledGame.score += delta * 10;
+
+  const speed = 155 + Math.min(sledGame.score * 1.4, 125);
+  if (sledGame.spawnElapsed >= Math.max(.62, .98 - sledGame.score / 550)) {
+    sledGame.spawnElapsed = 0;
+    sledGame.obstacles.push({
+      lane: Math.floor(Math.random() * 3),
+      y: -20,
+      kind: Math.random() < .72 ? "tree" : "snow"
+    });
+  }
+
+  sledGame.obstacles.forEach((obstacle) => { obstacle.y += speed * delta; });
+  sledGame.obstacles = sledGame.obstacles.filter((obstacle) => obstacle.y < sledGame.height + 24);
+  const collisionY = sledGame.height * .79;
+  if (sledGame.obstacles.some((obstacle) => obstacle.lane === sledGame.lane && Math.abs(obstacle.y - collisionY) < 23)) {
+    finishSledRide();
+    return;
+  }
+
+  drawSledScene();
+  sledGame.animationFrame = window.requestAnimationFrame(runSledFrame);
+}
+
+function startSledRide() {
+  if (!houseElements.dialog.open || sledGame.running) return;
+  resizeSledCanvas();
+  sledGame.running = true;
+  sledGame.hasPlayed = true;
+  sledGame.lastFrame = 0;
+  sledGame.spawnElapsed = 0;
+  sledGame.lane = 1;
+  sledGame.obstacles = [];
+  sledGame.score = 0;
+  houseElements.gameStatus.textContent = "";
+  houseElements.gameStart.textContent = translations[language].gameStart;
+  sledGame.animationFrame = window.requestAnimationFrame((timestamp) => {
+    sledGame.lastFrame = timestamp;
+    runSledFrame(timestamp);
+  });
+  drawSledScene();
+}
+
+function stopSledRide() {
+  if (!sledGame.running) return;
+  sledGame.running = false;
+  window.cancelAnimationFrame(sledGame.animationFrame);
+  drawSledScene();
+}
+
+function openCalendarDoor(day) {
+  const now = new Date();
+  const availableDay = now.getMonth() === 11 ? Math.min(now.getDate(), 24) : 0;
+  if (day > availableDay) {
+    houseElements.calendarNote.textContent = translations[language].calendarLocked;
+    houseElements.calendarNote.hidden = false;
+    return;
+  }
+
+  selectedCalendarDay = day;
+  openedCalendarDoors.add(day);
+  try {
+    localStorage.setItem(`jahreszeiten-advent-${openedCalendarYear}`, JSON.stringify([...openedCalendarDoors]));
+  } catch {
+    // The opened door remains visible until the page is closed if storage is unavailable.
+  }
+  updateCalendar(now);
+}
+
+houseElements.entry.addEventListener("click", () => {
+  houseElements.dialog.showModal();
+  window.requestAnimationFrame(resizeSledCanvas);
+});
+houseElements.close.addEventListener("click", () => houseElements.dialog.close());
+houseElements.dialog.addEventListener("click", (event) => {
+  if (event.target === houseElements.dialog) houseElements.dialog.close();
+});
+houseElements.dialog.addEventListener("close", stopSledRide);
+houseElements.gameStart.addEventListener("click", startSledRide);
+houseElements.calendar.addEventListener("click", (event) => {
+  const door = event.target.closest(".calendar-door");
+  if (door) openCalendarDoor(Number(door.dataset.day));
+});
+document.querySelectorAll("[data-steer]").forEach((button) => {
+  button.addEventListener("click", () => setSledLane(Number(button.dataset.steer)));
+});
+document.addEventListener("keydown", (event) => {
+  if (!houseElements.dialog.open || !sledGame.running) return;
+  if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") {
+    event.preventDefault();
+    setSledLane(-1);
+  } else if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") {
+    event.preventDefault();
+    setSledLane(1);
+  }
+});
+window.addEventListener("resize", () => {
+  if (houseElements.dialog.open) resizeSledCanvas();
+});
 
 function getDateKey(date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;

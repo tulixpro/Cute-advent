@@ -35,7 +35,9 @@ const houseElements = {
   close: document.querySelector("#room-close"),
   canvas: document.querySelector("#sled-canvas"),
   gameStatus: document.querySelector("#game-status"),
-  gameStart: document.querySelector("#game-start"),
+  console: document.querySelector("#console-power"),
+  consoleLabel: document.querySelector("#tv-caption"),
+  screenPrompt: document.querySelector("#tv-prompt"),
   calendar: document.querySelector("#calendar-grid"),
   calendarIntro: document.querySelector("#calendar-intro"),
   calendarNote: document.querySelector("#calendar-note")
@@ -92,13 +94,21 @@ const translations = {
     roomTitle: "Willkommen im warmen Zuhause!",
     roomSubtitle: "Draußen tanzt der Schnee. Drinnen warten Lichter, Spiele und Weihnachtszauber.",
     closeHouse: "Haus schließen", roomAria: "Gemütliches Wohnzimmer mit Tannenbaum und Fernseher",
-    roomTv: "Der kleine Spieleabend", gameTitle: "Schlittenfahrt",
-    gameInstructions: "Weiche den Tannen aus! Mit ← → oder den Knöpfen lenken.",
-    gameStart: "Los geht's!", gameRestart: "Nochmal fahren",
+    gameTitle: "Schlittenfahrt",
+    gameInstructions: "Lenke mit ← → oder halte die Knöpfe gedrückt. Drück zum Start die Konsole!",
+    consoleStart: "Konsole drücken, um das Spiel zu starten",
+    consolePause: "Konsole drücken, um zu pausieren",
+    consoleResume: "Konsole drücken, um weiterzufahren",
+    consoleRestart: "Konsole drücken, um nochmal zu fahren",
+    consoleReady: "Drück die Konsole zum Spielen!",
+    consolePlaying: "Du saust den Hang hinunter!",
+    consolePaused: "Pause im Schneegestöber",
+    consoleFinished: "Puh, das war eine wilde Fahrt!",
     gameReady: "Bist du bereit für eine kleine Schlittenfahrt?",
+    gamePaused: "Kurz verschnaufen — drück die Konsole zum Weiterfahren.",
     gameOver: "Oh! Ein Schneehügel! Punkte:",
     gameScore: "Punkte",
-    canvasLabel: "Schlitten-Spiel. Mit den Pfeiltasten nach links und rechts ausweichen.",
+    canvasLabel: "Schlitten-Spiel. Mit Pfeiltasten oder den Knöpfen lenken und Schneehindernissen ausweichen.",
     steerLabel: "Schlitten lenken", steerLeft: "Nach links lenken", steerRight: "Nach rechts lenken",
     calendarTitle: "Der kleine Adventskalender",
     calendarAria: "Adventskalender mit 24 Türchen",
@@ -193,13 +203,21 @@ const translations = {
     roomTitle: "Welcome to our cozy home!",
     roomSubtitle: "Snow is dancing outside. Inside, there are twinkly lights, games, and Christmas magic.",
     closeHouse: "Close the house", roomAria: "Cozy living room with a Christmas tree and television",
-    roomTv: "A little game night", gameTitle: "Sleigh ride",
-    gameInstructions: "Dodge the trees! Steer with ← → or the buttons.",
-    gameStart: "Let's ride!", gameRestart: "Ride again",
+    gameTitle: "Sleigh ride",
+    gameInstructions: "Steer with ← → or hold the buttons. Press the console to start!",
+    consoleStart: "Press the console to start the game",
+    consolePause: "Press the console to pause",
+    consoleResume: "Press the console to ride again",
+    consoleRestart: "Press the console for another ride",
+    consoleReady: "Press the console to play!",
+    consolePlaying: "You're racing down the snowy hill!",
+    consolePaused: "A little snow-day break",
+    consoleFinished: "Phew, what a wild ride!",
     gameReady: "Ready for a little sleigh ride?",
+    gamePaused: "Catch your breath — press the console to keep going.",
     gameOver: "Oh! A snowy bump! Score:",
     gameScore: "Score",
-    canvasLabel: "Sleigh game. Dodge left and right with the arrow keys.",
+    canvasLabel: "Sleigh game. Steer with the arrow keys or buttons and dodge snowy obstacles.",
     steerLabel: "Steer the sleigh", steerLeft: "Steer left", steerRight: "Steer right",
     calendarTitle: "The little advent calendar",
     calendarAria: "Advent calendar with 24 little doors",
@@ -670,18 +688,24 @@ function updateHouseLanguage(now) {
     node.setAttribute("aria-label", copy[key]);
   });
   updateCalendar(now);
-  if (!sledGame.running) houseElements.gameStatus.textContent = copy.gameReady;
-  houseElements.gameStart.textContent = sledGame.running ? copy.gameStart : (sledGame.hasPlayed ? copy.gameRestart : copy.gameStart);
+  if (!sledGame.running) {
+    houseElements.gameStatus.textContent = sledGame.paused ? copy.gamePaused : (sledGame.hasPlayed ? `${copy.gameOver} ${Math.floor(sledGame.score)}.` : copy.gameReady);
+  }
+  updateConsoleUi();
 }
 
 const sledGame = {
   context: houseElements.canvas.getContext("2d"),
   running: false,
+  paused: false,
   hasPlayed: false,
   animationFrame: 0,
   lastFrame: 0,
   spawnElapsed: 0,
-  lane: 1,
+  steering: 0,
+  steeringVelocity: 0,
+  playerX: 0,
+  worldOffset: 0,
   obstacles: [],
   score: 0,
   width: 0,
@@ -701,98 +725,329 @@ function resizeSledCanvas() {
   drawSledScene();
 }
 
+function drawPineTree(ctx, x, y, size) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = "rgba(73, 92, 104, .16)";
+  ctx.beginPath();
+  ctx.ellipse(0, size * .72, size * .48, size * .14, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#72564d";
+  ctx.fillRect(-size * .07, size * .28, size * .14, size * .45);
+  const tiers = [
+    { y: -.58, half: .2, h: .42, color: "#456c62" },
+    { y: -.31, half: .31, h: .49, color: "#3d665c" },
+    { y: -.02, half: .42, h: .56, color: "#355e55" }
+  ];
+  for (const tier of tiers) {
+    ctx.fillStyle = tier.color;
+    ctx.beginPath();
+    ctx.moveTo(0, size * (tier.y - tier.h * .57));
+    ctx.lineTo(size * tier.half, size * (tier.y + tier.h * .43));
+    ctx.lineTo(-size * tier.half, size * (tier.y + tier.h * .43));
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = "rgba(247, 252, 255, .86)";
+    ctx.lineWidth = Math.max(1, size * .035);
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(-size * tier.half * .65, size * (tier.y + tier.h * .14));
+    ctx.quadraticCurveTo(0, size * (tier.y + tier.h * .32), size * tier.half * .72, size * (tier.y + tier.h * .13));
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawSnowMound(ctx, x, y, size) {
+  ctx.fillStyle = "rgba(91, 123, 145, .15)";
+  ctx.beginPath();
+  ctx.ellipse(x, y + size * .28, size * .8, size * .28, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#fbfdff";
+  ctx.beginPath();
+  ctx.moveTo(x - size * .8, y + size * .18);
+  ctx.quadraticCurveTo(x - size * .42, y - size * .38, x, y - size * .12);
+  ctx.quadraticCurveTo(x + size * .56, y - size * .52, x + size * .8, y + size * .18);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = "rgba(171, 197, 213, .75)";
+  ctx.lineWidth = Math.max(1, size * .06);
+  ctx.beginPath();
+  ctx.moveTo(x - size * .38, y + size * .1);
+  ctx.quadraticCurveTo(x, y - size * .1, x + size * .38, y + size * .08);
+  ctx.stroke();
+}
+
+function sledRoadAt(depth) {
+  const { width, height } = sledGame;
+  const perspective = depth * depth;
+  const curve = Math.sin(sledGame.worldOffset * .7 + depth * 2.4) * width * .022 * perspective;
+  const roadHalf = width * (.12 + .37 * perspective);
+  return {
+    x: width * .5 + curve,
+    half: roadHalf,
+    y: height * (.15 + depth * 1.07)
+  };
+}
+
+function drawSledRider(ctx, x, y, scale) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "rgba(73, 87, 100, .2)";
+  ctx.beginPath();
+  ctx.ellipse(0, 26, 34, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.strokeStyle = "#ece6df";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(-20, 25);
+  ctx.quadraticCurveTo(-7, 29, 21, 24);
+  ctx.moveTo(-18, 30);
+  ctx.quadraticCurveTo(0, 34, 23, 28);
+  ctx.stroke();
+  ctx.fillStyle = "#ae565c";
+  ctx.beginPath();
+  ctx.moveTo(-24, 21);
+  ctx.quadraticCurveTo(-4, 17, 26, 20);
+  ctx.lineTo(22, 27);
+  ctx.quadraticCurveTo(0, 31, -22, 27);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = "#8c414a";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.fillStyle = "#d7a866";
+  ctx.fillRect(-7, 20, 3, 7);
+  ctx.fillRect(6, 20, 3, 7);
+
+  ctx.strokeStyle = "#765d56";
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.moveTo(-11, 12);
+  ctx.lineTo(-20, 25);
+  ctx.moveTo(10, 12);
+  ctx.lineTo(18, 24);
+  ctx.stroke();
+  ctx.fillStyle = "#678a91";
+  ctx.beginPath();
+  ctx.moveTo(-15, -12);
+  ctx.quadraticCurveTo(-18, 2, -11, 17);
+  ctx.lineTo(13, 17);
+  ctx.quadraticCurveTo(18, 1, 13, -12);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = "#4d737b";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.strokeStyle = "#e9c2a3";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(-12, -6);
+  ctx.lineTo(-24, 4);
+  ctx.moveTo(12, -6);
+  ctx.lineTo(24, 1);
+  ctx.stroke();
+  ctx.fillStyle = "#e8b99a";
+  ctx.beginPath();
+  ctx.arc(0, -21, 9, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#b95e64";
+  ctx.beginPath();
+  ctx.arc(0, -24, 9, Math.PI, Math.PI * 2);
+  ctx.quadraticCurveTo(10, -20, 7, -16);
+  ctx.lineTo(-8, -16);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = "#fff8ed";
+  ctx.beginPath();
+  ctx.ellipse(0, -15, 9, 2.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#514a51";
+  ctx.beginPath();
+  ctx.arc(-3, -21, 1, 0, Math.PI * 2);
+  ctx.arc(3, -21, 1, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
 function drawSledScene() {
   if (!sledGame.width || !sledGame.height) return;
   const { context: ctx, width, height } = sledGame;
   const gradient = ctx.createLinearGradient(0, 0, 0, height);
-  gradient.addColorStop(0, "#dce9f2");
-  gradient.addColorStop(.58, "#f5f8fa");
-  gradient.addColorStop(1, "#e5eef4");
+  gradient.addColorStop(0, "#9fb7cb");
+  gradient.addColorStop(.32, "#e3edf3");
+  gradient.addColorStop(1, "#f5f8fa");
   ctx.clearRect(0, 0, width, height);
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, width, height);
 
-  ctx.fillStyle = "rgba(255,255,255,.82)";
+  ctx.fillStyle = "#8399ac";
   ctx.beginPath();
-  ctx.moveTo(0, height * .48);
-  ctx.lineTo(width * .2, height * .25);
-  ctx.lineTo(width * .37, height * .49);
-  ctx.lineTo(width * .59, height * .17);
-  ctx.lineTo(width * .79, height * .5);
-  ctx.lineTo(width, height * .29);
+  ctx.moveTo(0, height * .42);
+  ctx.lineTo(width * .16, height * .13);
+  ctx.lineTo(width * .31, height * .43);
+  ctx.lineTo(width * .53, height * .06);
+  ctx.lineTo(width * .73, height * .4);
+  ctx.lineTo(width * .9, height * .16);
+  ctx.lineTo(width, height * .36);
   ctx.lineTo(width, height);
   ctx.lineTo(0, height);
   ctx.closePath();
   ctx.fill();
 
-  ctx.fillStyle = "#edf2f5";
+  ctx.fillStyle = "#f9fcff";
   ctx.beginPath();
-  ctx.moveTo(width * .19, height);
-  ctx.lineTo(width * .39, height * .16);
-  ctx.lineTo(width * .61, height * .16);
-  ctx.lineTo(width * .81, height);
+  ctx.moveTo(0, height * .48);
+  ctx.lineTo(width * .16, height * .13);
+  ctx.lineTo(width * .31, height * .43);
+  ctx.lineTo(width * .53, height * .06);
+  ctx.lineTo(width * .73, height * .4);
+  ctx.lineTo(width * .9, height * .16);
+  ctx.lineTo(width, height * .36);
+  ctx.lineTo(width, height * .44);
+  ctx.lineTo(width * .9, height * .27);
+  ctx.lineTo(width * .73, height * .51);
+  ctx.lineTo(width * .53, height * .17);
+  ctx.lineTo(width * .31, height * .53);
+  ctx.lineTo(width * .16, height * .22);
+  ctx.lineTo(0, height * .56);
   ctx.closePath();
   ctx.fill();
-  ctx.strokeStyle = "rgba(162,185,201,.58)";
-  ctx.lineWidth = 2;
+
+  ctx.fillStyle = "rgba(74, 99, 116, .35)";
+  ctx.fillRect(0, height * .47, width, height * .025);
+
+  for (let index = 0; index < 8; index += 1) {
+    const depth = ((index * .17 + sledGame.worldOffset * .045) % 1);
+    const position = sledRoadAt(depth);
+    const size = 4 + depth * 19;
+    drawPineTree(ctx, position.x - position.half * 1.18, position.y, size);
+    drawPineTree(ctx, position.x + position.half * 1.18, position.y, size * .82);
+  }
+
+  const near = sledRoadAt(1);
+  const far = sledRoadAt(0);
+  const mid = sledRoadAt(.5);
+  ctx.fillStyle = "#f4f8fb";
   ctx.beginPath();
-  ctx.moveTo(width * .39, height * .16);
-  ctx.lineTo(width * .19, height);
-  ctx.moveTo(width * .61, height * .16);
-  ctx.lineTo(width * .81, height);
+  ctx.moveTo(far.x - far.half, far.y);
+  ctx.lineTo(far.x + far.half, far.y);
+  ctx.lineTo(near.x + near.half, near.y);
+  ctx.lineTo(near.x - near.half, near.y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255,255,255,.85)";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(far.x - far.half, far.y);
+  ctx.quadraticCurveTo(mid.x - mid.half, mid.y, near.x - near.half, near.y);
+  ctx.moveTo(far.x + far.half, far.y);
+  ctx.quadraticCurveTo(mid.x + mid.half, mid.y, near.x + near.half, near.y);
   ctx.stroke();
 
-  const laneCenters = [width * .38, width * .5, width * .62];
-  ctx.setLineDash([9, 12]);
-  ctx.strokeStyle = "rgba(179,197,208,.42)";
-  ctx.lineWidth = 1;
-  for (const laneX of [width * .44, width * .56]) {
+  for (const track of [-.38, .32]) {
+    ctx.strokeStyle = "rgba(167, 193, 210, .55)";
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(laneX, height * .4);
-    ctx.lineTo(laneX, height);
+    ctx.moveTo(far.x + track * far.half, far.y);
+    ctx.quadraticCurveTo(mid.x + track * mid.half, mid.y, near.x + track * near.half, near.y);
     ctx.stroke();
   }
-  ctx.setLineDash([]);
 
-  for (const obstacle of sledGame.obstacles) {
-    ctx.font = `${Math.max(20, width * .055)}px "Segoe UI Emoji", sans-serif`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(obstacle.kind === "tree" ? "🌲" : "❄️", laneCenters[obstacle.lane], obstacle.y);
+  ctx.strokeStyle = "rgba(255,255,255,.7)";
+  ctx.lineWidth = 2;
+  for (let index = 0; index < 12; index += 1) {
+    const depth = ((index * .13 + sledGame.worldOffset * .12) % 1);
+    const point = sledRoadAt(depth);
+    const drift = Math.sin(index * 18.7 + sledGame.worldOffset * 2) * point.half * .8;
+    ctx.beginPath();
+    ctx.moveTo(point.x + drift, point.y);
+    ctx.lineTo(point.x + drift + (index % 2 ? 4 : -3) * depth, point.y + 2 + depth * 7);
+    ctx.stroke();
   }
 
-  const sledY = height * .79;
-  ctx.font = `${Math.max(30, width * .075)}px "Segoe UI Emoji", sans-serif`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText("🛷", laneCenters[sledGame.lane], sledY);
+  const visibleObstacles = [...sledGame.obstacles].sort((a, b) => a.depth - b.depth);
+  for (const obstacle of visibleObstacles) {
+    const position = sledRoadAt(obstacle.depth);
+    const obstacleX = position.x + obstacle.offset * position.half;
+    const obstacleSize = 5 + obstacle.depth * Math.min(width * .075, height * .22);
+    if (obstacle.kind === "tree") drawPineTree(ctx, obstacleX, position.y, obstacleSize);
+    else drawSnowMound(ctx, obstacleX, position.y, obstacleSize);
+  }
+
+  const playerRoad = sledRoadAt(.88);
+  drawSledRider(ctx, playerRoad.x + sledGame.playerX * playerRoad.half * .72, playerRoad.y, Math.max(.82, Math.min(1.38, width / 440)));
 
   ctx.fillStyle = "#687a8b";
   ctx.font = "700 12px 'Trebuchet MS', sans-serif";
   ctx.textAlign = "left";
   ctx.textBaseline = "top";
   ctx.fillText(`${translations[language].gameScore}: ${Math.floor(sledGame.score)}`, 12, 12);
-  if (!sledGame.running && !sledGame.hasPlayed) {
-    ctx.fillStyle = "rgba(70, 87, 108, .7)";
-    ctx.font = "600 12px 'Trebuchet MS', sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText(translations[language].gameReady, width / 2, height * .57);
-  }
 }
 
-function setSledLane(direction) {
+function updateConsoleUi() {
+  const copy = translations[language];
+  const state = sledGame.running ? "running" : sledGame.paused ? "paused" : sledGame.hasPlayed ? "finished" : "ready";
+  const labelKeys = {
+    ready: "consoleStart",
+    running: "consolePause",
+    paused: "consoleResume",
+    finished: "consoleRestart"
+  };
+  const promptKeys = {
+    ready: "consoleReady",
+    running: "consolePlaying",
+    paused: "consolePaused",
+    finished: "consoleFinished"
+  };
+  houseElements.console.classList.toggle("is-on", sledGame.running);
+  houseElements.console.setAttribute("aria-label", copy[labelKeys[state]]);
+  houseElements.consoleLabel.textContent = copy[labelKeys[state]];
+  houseElements.screenPrompt.textContent = copy[promptKeys[state]];
+}
+
+function setSledSteering(direction) {
   if (!sledGame.running) return;
-  sledGame.lane = Math.max(0, Math.min(2, sledGame.lane + direction));
+  sledGame.steering = direction;
+}
+
+function pauseSledRide() {
+  if (!sledGame.running) return;
+  sledGame.running = false;
+  sledGame.paused = true;
+  sledGame.steering = 0;
+  window.cancelAnimationFrame(sledGame.animationFrame);
+  houseElements.gameStatus.textContent = translations[language].gamePaused;
+  updateConsoleUi();
   drawSledScene();
+}
+
+function resumeSledRide() {
+  if (!houseElements.dialog.open || sledGame.running) return;
+  sledGame.running = true;
+  sledGame.paused = false;
+  sledGame.lastFrame = 0;
+  houseElements.gameStatus.textContent = "";
+  updateConsoleUi();
+  sledGame.animationFrame = window.requestAnimationFrame((timestamp) => {
+    sledGame.lastFrame = timestamp;
+    runSledFrame(timestamp);
+  });
 }
 
 function finishSledRide() {
   sledGame.running = false;
+  sledGame.paused = false;
   sledGame.hasPlayed = true;
+  sledGame.steering = 0;
   window.cancelAnimationFrame(sledGame.animationFrame);
   const copy = translations[language];
   houseElements.gameStatus.textContent = `${copy.gameOver} ${Math.floor(sledGame.score)}.`;
-  houseElements.gameStart.textContent = copy.gameRestart;
+  updateConsoleUi();
   drawSledScene();
 }
 
@@ -801,25 +1056,30 @@ function runSledFrame(timestamp) {
   const delta = Math.min((timestamp - sledGame.lastFrame) / 1000, .05);
   sledGame.lastFrame = timestamp;
   sledGame.spawnElapsed += delta;
-  sledGame.score += delta * 10;
+  sledGame.score += delta * 18;
+  sledGame.steeringVelocity += sledGame.steering * 2.8 * delta;
+  sledGame.steeringVelocity *= Math.exp(-3.2 * delta);
+  sledGame.playerX = Math.max(-.84, Math.min(.84, sledGame.playerX + sledGame.steeringVelocity * delta));
 
-  const speed = 155 + Math.min(sledGame.score * 1.4, 125);
-  if (sledGame.spawnElapsed >= Math.max(.62, .98 - sledGame.score / 550)) {
+  const speed = .24 + Math.min(sledGame.score / 1800, .46);
+  sledGame.worldOffset += speed * delta;
+  if (sledGame.spawnElapsed >= Math.max(.48, .82 - sledGame.score / 1200)) {
     sledGame.spawnElapsed = 0;
     sledGame.obstacles.push({
-      lane: Math.floor(Math.random() * 3),
-      y: -20,
+      offset: (Math.random() * 1.5) - .75,
+      depth: .02,
       kind: Math.random() < .72 ? "tree" : "snow"
     });
   }
 
-  sledGame.obstacles.forEach((obstacle) => { obstacle.y += speed * delta; });
-  sledGame.obstacles = sledGame.obstacles.filter((obstacle) => obstacle.y < sledGame.height + 24);
-  const collisionY = sledGame.height * .79;
-  if (sledGame.obstacles.some((obstacle) => obstacle.lane === sledGame.lane && Math.abs(obstacle.y - collisionY) < 23)) {
+  sledGame.obstacles.forEach((obstacle) => { obstacle.depth += speed * delta; });
+  if (sledGame.obstacles.some((obstacle) => (
+    obstacle.depth > .86 && obstacle.depth < 1.02 && Math.abs(obstacle.offset - sledGame.playerX) < .16
+  ))) {
     finishSledRide();
     return;
   }
+  sledGame.obstacles = sledGame.obstacles.filter((obstacle) => obstacle.depth < 1.08);
 
   drawSledScene();
   sledGame.animationFrame = window.requestAnimationFrame(runSledFrame);
@@ -829,14 +1089,18 @@ function startSledRide() {
   if (!houseElements.dialog.open || sledGame.running) return;
   resizeSledCanvas();
   sledGame.running = true;
+  sledGame.paused = false;
   sledGame.hasPlayed = true;
   sledGame.lastFrame = 0;
   sledGame.spawnElapsed = 0;
-  sledGame.lane = 1;
+  sledGame.steering = 0;
+  sledGame.steeringVelocity = 0;
+  sledGame.playerX = 0;
+  sledGame.worldOffset = 0;
   sledGame.obstacles = [];
   sledGame.score = 0;
   houseElements.gameStatus.textContent = "";
-  houseElements.gameStart.textContent = translations[language].gameStart;
+  updateConsoleUi();
   sledGame.animationFrame = window.requestAnimationFrame((timestamp) => {
     sledGame.lastFrame = timestamp;
     runSledFrame(timestamp);
@@ -847,8 +1111,18 @@ function startSledRide() {
 function stopSledRide() {
   if (!sledGame.running) return;
   sledGame.running = false;
+  sledGame.paused = true;
+  sledGame.steering = 0;
   window.cancelAnimationFrame(sledGame.animationFrame);
+  houseElements.gameStatus.textContent = translations[language].gamePaused;
+  updateConsoleUi();
   drawSledScene();
+}
+
+function toggleSledRide() {
+  if (sledGame.running) pauseSledRide();
+  else if (sledGame.paused) resumeSledRide();
+  else startSledRide();
 }
 
 function openCalendarDoor(day) {
@@ -879,22 +1153,38 @@ houseElements.dialog.addEventListener("click", (event) => {
   if (event.target === houseElements.dialog) houseElements.dialog.close();
 });
 houseElements.dialog.addEventListener("close", stopSledRide);
-houseElements.gameStart.addEventListener("click", startSledRide);
+houseElements.console.addEventListener("click", toggleSledRide);
 houseElements.calendar.addEventListener("click", (event) => {
   const door = event.target.closest(".calendar-door");
   if (door) openCalendarDoor(Number(door.dataset.day));
 });
 document.querySelectorAll("[data-steer]").forEach((button) => {
-  button.addEventListener("click", () => setSledLane(Number(button.dataset.steer)));
+  const startSteering = (event) => {
+    event.preventDefault();
+    button.setPointerCapture?.(event.pointerId);
+    setSledSteering(Number(button.dataset.steer));
+  };
+  const stopSteering = () => setSledSteering(0);
+  button.addEventListener("pointerdown", startSteering);
+  button.addEventListener("pointerup", stopSteering);
+  button.addEventListener("pointercancel", stopSteering);
+  button.addEventListener("lostpointercapture", stopSteering);
 });
 document.addEventListener("keydown", (event) => {
   if (!houseElements.dialog.open || !sledGame.running) return;
   if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") {
     event.preventDefault();
-    setSledLane(-1);
+    setSledSteering(-1);
   } else if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") {
     event.preventDefault();
-    setSledLane(1);
+    setSledSteering(1);
+  }
+});
+document.addEventListener("keyup", (event) => {
+  if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") {
+    if (sledGame.steering < 0) setSledSteering(0);
+  } else if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") {
+    if (sledGame.steering > 0) setSledSteering(0);
   }
 });
 window.addEventListener("resize", () => {

@@ -240,15 +240,22 @@
             <span class="tree-layer tree-layer-one"></span><span class="tree-layer tree-layer-two"></span><span class="tree-layer tree-layer-three"></span>
             <span class="tree-trunk-indoor"></span>
             <span class="tree-bauble-indoor bauble-a"></span><span class="tree-bauble-indoor bauble-b"></span><span class="tree-bauble-indoor bauble-c"></span>
-            <span class="tree-present present-a" aria-hidden="true">🎁</span><span class="tree-present present-b" aria-hidden="true">🎁</span>
           </div>
           <div class="room-sofa" aria-hidden="true"><span></span><i></i><b></b></div>
           <div class="room-tv-area">
-            <div class="tv-frame"><div class="tv-screen"><span>❄</span><i>★</i><b>✦</b></div></div>
+            <div class="tv-frame"><div class="tv-screen"><span>❄</span><i>★</i><b>✦</b><strong id="tv-prompt">Drück die Konsole zum Spielen!</strong></div></div>
             <div class="tv-feet"></div>
-            <div class="tv-console" aria-label="Spielkonsole"><span></span><i></i><b></b></div>
-            <p data-i18n="roomTv">Der kleine Spieleabend</p>
+            <button class="tv-console" id="console-power" type="button" aria-label="Konsole drücken, um das Spiel zu starten"><span class="console-led"></span><i></i><b></b><span class="console-name">POWER</span></button>
+            <p id="tv-caption">Drück die Konsole zum Spielen!</p>
           </div>
+          <section class="advent-calendar wall-calendar" aria-labelledby="calendar-title">
+            <div class="activity-heading">
+              <span class="activity-icon" aria-hidden="true">🎁</span>
+              <div><h3 id="calendar-title" data-i18n="calendarTitle">Der kleine Adventskalender</h3><p id="calendar-intro"></p></div>
+            </div>
+            <div class="calendar-grid" id="calendar-grid" aria-label="Adventskalender mit 24 Türchen" data-i18n-aria="calendarAria"></div>
+            <p class="calendar-note" id="calendar-note" aria-live="polite" hidden></p>
+          </section>
           <div class="room-rug" aria-hidden="true"></div>
         </div>
 
@@ -256,28 +263,16 @@
           <section class="sled-game" aria-labelledby="game-title">
             <div class="activity-heading">
               <span class="activity-icon" aria-hidden="true">🛷</span>
-              <div><h3 id="game-title" data-i18n="gameTitle">Schlittenfahrt</h3><p data-i18n="gameInstructions">Weiche den Tannen aus! Mit ← → oder den Knöpfen lenken.</p></div>
+              <div><h3 id="game-title" data-i18n="gameTitle">Schlittenfahrt</h3><p data-i18n="gameInstructions">Lenke mit ← → oder halte die Knöpfe gedrückt. Drück zum Start die Konsole!</p></div>
             </div>
             <canvas class="sled-canvas" id="sled-canvas" width="640" height="300" role="img" aria-label="Schlitten-Spiel. Mit den Pfeiltasten nach links und rechts ausweichen." data-i18n-aria="canvasLabel"></canvas>
             <div class="game-controls">
               <p class="game-status" id="game-status" aria-live="polite"></p>
-              <div class="game-buttons">
-                <div class="steer-buttons" aria-label="Schlitten lenken" data-i18n-aria="steerLabel">
-                  <button class="steer-button" type="button" data-steer="-1" aria-label="Nach links lenken" data-i18n-aria="steerLeft">←</button>
-                  <button class="steer-button" type="button" data-steer="1" aria-label="Nach rechts lenken" data-i18n-aria="steerRight">→</button>
-                </div>
-                <button class="game-start" id="game-start" type="button" data-i18n="gameStart">Los geht's!</button>
+              <div class="steer-buttons" aria-label="Schlitten lenken" data-i18n-aria="steerLabel">
+                <button class="steer-button" type="button" data-steer="-1" aria-label="Nach links lenken" data-i18n-aria="steerLeft">←</button>
+                <button class="steer-button" type="button" data-steer="1" aria-label="Nach rechts lenken" data-i18n-aria="steerRight">→</button>
               </div>
             </div>
-          </section>
-
-          <section class="advent-calendar" aria-labelledby="calendar-title">
-            <div class="activity-heading">
-              <span class="activity-icon" aria-hidden="true">🎁</span>
-              <div><h3 id="calendar-title" data-i18n="calendarTitle">Der kleine Adventskalender</h3><p id="calendar-intro"></p></div>
-            </div>
-            <div class="calendar-grid" id="calendar-grid" aria-label="Adventskalender mit 24 Türchen" data-i18n-aria="calendarAria"></div>
-            <p class="calendar-note" id="calendar-note" aria-live="polite" hidden></p>
           </section>
         </div>
       </div>

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fffaf4">
+  <meta name="description" content="Ein kleiner, kuscheliger Countdown durch die Jahreszeiten – mit seltenen Überraschungen.">
+  <title>Kleine Jahreszeiten-Magie</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="season-wash" aria-hidden="true"></div>
+  <div class="snowfall" id="snowfall" aria-hidden="true"></div>
+  <div class="surprise-layer" id="surprise-layer" aria-hidden="true"></div>
+  <div class="flight-layer" id="flight-layer" aria-hidden="true">
+    <svg class="santa-flight" viewBox="0 0 360 120" role="presentation">
+      <path class="flight-trail" d="M24 91Q130 109 213 87"/>
+      <g class="flight-reindeer">
+        <path class="reindeer-body" d="M238 63Q251 48 278 56L291 70 279 80H248Z"/>
+        <path class="reindeer-neck" d="M274 60 286 42 300 48 294 70Z"/>
+        <circle class="reindeer-head" cx="301" cy="43" r="11"/>
+        <path class="reindeer-muzzle" d="M306 47Q318 43 314 51Q309 56 303 51Z"/>
+        <circle class="reindeer-nose" cx="314" cy="48" r="3"/>
+        <circle class="reindeer-eye" cx="303" cy="40" r="1.5"/>
+        <path class="reindeer-antlers" d="M298 33 293 24 288 22M295 29 300 23M306 33 311 23 317 20M310 28 306 23"/>
+        <path class="reindeer-leg" d="m250 75-3 20m17-19 2 19m13-20 5 18"/>
+        <path class="flight-harness" d="M232 66Q222 62 211 68"/>
+      </g>
+      <g class="flight-sleigh">
+        <path class="sleigh-body" d="M81 72Q111 64 155 72L147 91H104Q90 88 81 72Z"/>
+        <path class="sleigh-gold" d="M89 70Q121 63 152 70L148 76Q119 70 94 77Z"/>
+        <path class="sleigh-runner" d="M95 92Q120 104 156 94Q165 91 169 97Q158 111 126 107Q104 105 93 98Z"/>
+        <path class="sleigh-runner-line" d="M97 96Q128 108 161 97"/>
+        <circle class="flight-gift" cx="113" cy="61" r="11"/>
+        <path class="flight-gift-ribbon" d="M113 51V72M103 61H123"/>
+        <path class="flight-gift" d="M130 61 141 51 151 62 143 72Z"/>
+        <g class="flight-santa">
+          <path class="flight-coat" d="M96 62Q97 45 110 43L128 54 123 71H100Z"/>
+          <circle class="flight-face" cx="109" cy="37" r="11"/>
+          <path class="flight-beard" d="M99 38Q104 42 109 38Q115 42 120 37L117 49Q109 55 102 48Z"/>
+          <path class="flight-hat" d="M98 35Q101 21 115 26L123 35 117 39Q108 32 99 40Z"/>
+          <path class="flight-trim" d="M99 37Q109 31 120 37L119 41Q108 36 100 42Z"/>
+          <circle class="flight-pom" cx="124" cy="35" r="4"/>
+          <circle class="flight-eye" cx="105" cy="36" r="1.3"/>
+          <circle class="flight-eye" cx="113" cy="36" r="1.3"/>
+        </g>
+      </g>
+      <g class="flight-laugh">
+        <path d="M167 11h114a9 9 0 0 1 9 9v20a9 9 0 0 1-9 9h-47l-11 10-3-10h-53a9 9 0 0 1-9-9V20a9 9 0 0 1 9-9Z"/>
+        <text id="flight-laugh-text" x="224" y="37" text-anchor="middle">Ho ho ho!</text>
+      </g>
+      <path class="flight-sparkle" d="m185 42 4 9 9 4-9 4-4 9-4-9-9-4 9-4z"/>
+      <path class="flight-sparkle sparkle-small" d="m218 35 3 6 6 3-6 3-3 6-3-6-6-3 6-3z"/>
+    </svg>
+  </div>
+
+  <main class="page">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Kleine Jahreszeiten-Magie – Startseite">
+        <span class="brand-mark" aria-hidden="true">✿</span>
+          <span data-i18n="brand">Kleine Jahreszeiten-Magie</span>
+      </a>
+        <div class="topbar-tools">
+          <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="false" title="Ton einschalten" aria-label="Ton einschalten">🔇</button>
+          <label class="language-picker">
+            <span class="language-icon" aria-hidden="true">🌐</span>
+            <span class="visually-hidden" data-i18n="languageLabel">Sprache auswählen</span>
+            <select id="language-select" aria-label="Sprache auswählen">
+              <option value="de">Deutsch</option>
+              <option value="en">English</option>
+            </select>
+          </label>
+          <span class="today-pill"><span class="status-dot"></span><span id="today-label">Ein neuer Tag voller Zauber</span></span>
+        </div>
+    </header>
+
+    <div class="hero-layout" id="hero-layout">
+    <section class="countdown-card" aria-labelledby="page-title">
+      <div class="card-sparkle sparkle-one" aria-hidden="true">✦</div>
+      <div class="card-sparkle sparkle-two" aria-hidden="true">✧</div>
+
+      <div class="countdown" id="countdown" aria-label="Countdown">
+        <div class="time-unit"><span class="time-value" id="days">00</span><span class="time-label" data-i18n="days">Tage</span></div>
+        <span class="time-divider" aria-hidden="true">·</span>
+        <div class="time-unit"><span class="time-value" id="hours">00</span><span class="time-label" data-i18n="hours">Stunden</span></div>
+        <span class="time-divider" aria-hidden="true">·</span>
+        <div class="time-unit"><span class="time-value" id="minutes">00</span><span class="time-label" data-i18n="minutes">Minuten</span></div>
+        <span class="time-divider" aria-hidden="true">·</span>
+        <div class="time-unit"><span class="time-value" id="seconds">00</span><span class="time-label" data-i18n="seconds">Sekunden</span></div>
+      </div>
+      <p class="countdown-caption" id="countdown-caption">bis zum nächsten Lieblingsmoment</p>
+
+      <div class="season-art" aria-hidden="true">
+        <span class="season-art-backdrop"></span>
+        <span class="season-art-emoji" id="season-emoji">🌷</span>
+        <span class="art-twinkle art-twinkle-one">✦</span>
+        <span class="art-twinkle art-twinkle-two">✧</span>
+      </div>
+
+      <p class="eyebrow" id="season-label">EIN KLEINER JAHRESZEITENZAUBER</p>
+      <h1 id="page-title">Ein bisschen Magie<br>wartet schon ✨</h1>
+      <p class="intro" id="season-message">Jeder Tag bringt uns einem neuen kleinen Glück näher.</p>
+
+      <p class="elf-note" id="elf-note" hidden></p>
+
+      <div class="season-footer">
+        <span id="footer-emoji" aria-hidden="true">🌼</span>
+        <span id="footer-message">Mach es dir gemütlich – der Zauber kommt ganz von allein.</span>
+        <span id="footer-emoji-end" aria-hidden="true">☁️</span>
+      </div>
+    </section>
+
+    <div class="cozy-scene" aria-hidden="true">
+      <svg class="cozy-house" viewBox="0 0 520 300" role="presentation">
+        <path class="scene-hill" d="M0 266 Q95 238 185 260 T365 253 T520 259 V300 H0Z"/>
+        <path class="house-shadow" d="M100 260 Q260 238 420 260Z"/>
+        <path class="garden-path" d="M247 264Q230 279 225 300H295Q290 279 273 264Z"/>
+        <g class="fir-tree tree-left">
+          <path d="M95 253 115 207 135 253Z"/><path d="M99 235 115 190 131 235Z"/><path d="M104 216 115 178 126 216Z"/>
+          <path class="tree-snow" d="m104 216 11-38 11 38-11-8zm-5 19 16-45 16 45-16-9zm-4 18 20-46 20 46-20-10z"/>
+          <path class="tree-trunk" d="M111 250H119V265H111Z"/>
+          <circle class="tree-bauble" cx="108" cy="226" r="3"/><circle class="tree-bauble bauble-two" cx="121" cy="240" r="3"/>
+        </g>
+        <g class="fir-tree tree-right">
+          <path d="M385 254 405 207 425 254Z"/><path d="M389 235 405 190 421 235Z"/><path d="M394 216 405 178 416 216Z"/>
+          <path class="tree-snow" d="m394 216 11-38 11 38-11-8zm-5 19 16-45 16 45-16-9zm-4 19 20-47 20 47-20-10z"/>
+          <path class="tree-trunk" d="M401 250H409V265H401Z"/>
+          <circle class="tree-bauble" cx="398" cy="228" r="3"/><circle class="tree-bauble bauble-two" cx="411" cy="240" r="3"/>
+        </g>
+        <path class="house-body" d="M142 143 260 65 378 143V261H142Z"/>
+        <path class="house-roof" d="M113 148 260 48 407 148 393 165 260 75 127 165Z"/>
+        <path class="chimney" d="M329 96V57H357V116Z"/>
+        <path class="chimney-cap" d="M324 57H362V67H324Z"/>
+        <path class="gable" d="M208 112 260 77 312 112Z"/>
+        <rect class="house-window" x="170" y="157" width="46" height="48" rx="8"/>
+        <path class="window-frame" d="M193 158V204M171 181H215"/>
+        <rect class="house-window" x="304" y="157" width="46" height="48" rx="8"/>
+        <path class="window-frame" d="M327 158V204M305 181H349"/>
+        <path class="door" d="M235 190Q260 177 285 190V261H235Z"/>
+        <circle class="door-knob" cx="276" cy="228" r="3"/>
+        <path class="door-step" d="M226 260H294V268H226Z"/>
+        <path class="snow-cap" d="M115 148Q132 137 147 146Q163 136 177 145Q194 134 207 145Q227 132 241 143Q260 130 277 143Q295 132 311 144Q330 134 345 145Q365 135 379 146Q397 136 409 148L403 157Q390 153 378 160Q362 152 348 160Q330 153 313 161Q295 151 278 160Q260 151 242 160Q223 151 207 160Q190 151 175 160Q158 151 145 160Q129 151 120 159Z"/>
+        <path class="light-cord" d="M166 151Q207 169 260 155T354 151"/>
+        <circle class="roof-light light-pink" cx="180" cy="157" r="4"/><circle class="roof-light light-gold" cx="207" cy="163" r="4"/>
+        <circle class="roof-light light-blue" cx="234" cy="162" r="4"/><circle class="roof-light light-pink" cx="262" cy="155" r="4"/>
+        <circle class="roof-light light-gold" cx="290" cy="160" r="4"/><circle class="roof-light light-blue" cx="319" cy="160" r="4"/>
+        <circle class="roof-light light-pink" cx="345" cy="153" r="4"/>
+        <circle class="wreath" cx="260" cy="188" r="11"/>
+        <circle class="wreath-berry" cx="252" cy="184" r="2"/><circle class="wreath-berry" cx="267" cy="183" r="2"/>
+        <circle class="wreath-berry" cx="264" cy="196" r="2"/>
+        <g class="santa-figure" aria-hidden="true">
+          <path class="santa-sack" d="M359 227Q366 219 378 225L388 254Q377 264 359 255L354 239Z"/>
+          <path class="santa-sack-tie" d="M356 226Q362 220 369 225L364 232Z"/>
+          <path class="santa-coat" d="M319 225Q327 216 340 224L348 260H310Z"/>
+          <path class="santa-trim" d="M321 226 331 231 340 224 344 231 332 238 316 232Z"/>
+          <path class="santa-arm" d="M320 229Q312 222 307 211L312 207Q322 213 329 224Z"/>
+          <circle class="santa-hand" cx="309" cy="208" r="4"/>
+          <path class="santa-face" d="M319 194Q318 183 330 183Q342 184 341 197L338 208Q330 216 322 207Z"/>
+          <path class="santa-beard" d="M320 199Q323 202 328 199Q333 203 339 198L338 210Q332 218 324 210Z"/>
+          <path class="santa-hat" d="M317 193Q320 180 334 181Q341 182 344 190L338 195Q330 190 320 198Z"/>
+          <path class="santa-hat-trim" d="M318 194Q330 188 342 193L341 198Q330 194 320 200Z"/>
+          <circle class="santa-hat-pom" cx="344" cy="191" r="4"/>
+          <circle class="santa-eye" cx="326" cy="195" r="1.3"/>
+          <circle class="santa-eye" cx="335" cy="195" r="1.3"/>
+          <circle class="santa-nose" cx="331" cy="199" r="2.2"/>
+          <path class="santa-boot" d="M312 257H325Q327 262 321 264H309Z"/>
+          <path class="santa-boot" d="M332 257H344Q346 262 340 264H329Z"/>
+          <path class="santa-sack-mark" d="M367 236 370 231 373 236 378 237 374 241 375 246 370 243 366 246 367 241 363 238Z"/>
+          <circle class="doorbell" cx="306" cy="207" r="3"/>
+          <path class="bell-glint" d="M303 200 301 196M309 200 311 196"/>
+        </g>
+        <circle class="scene-snow snow-a" cx="90" cy="208" r="3"/>
+        <circle class="scene-snow snow-b" cx="435" cy="188" r="4"/>
+        <circle class="scene-snow snow-c" cx="405" cy="226" r="2.5"/>
+      </svg>
+      <span class="scene-boot boot-one">🥾</span>
+      <span class="scene-boot boot-two">🥾</span>
+      <span class="scene-sparkle">✦</span>
+    </div>
+    </div>
+
+    <section class="season-guide" aria-labelledby="guide-title">
+      <p class="guide-kicker" data-i18n="guideKicker">KLEINE VORFREUDE FÜRS GANZE JAHR</p>
+      <h2 id="guide-title" data-i18n="guideTitle">Was bringt die nächste Zeit?</h2>
+      <p class="guide-intro" data-i18n="guideIntro">Die kleinen Szenen wechseln mit dem Kalender – und jede Jahreszeit hat ihre eigene Überraschung.</p>
+      <div class="guide-grid">
+        <article class="guide-card guide-christmas">
+          <span class="guide-icon" aria-hidden="true">🎄</span>
+          <div><h3 data-i18n="christmasGuideTitle">Dezemberzauber</h3><p data-i18n="christmasGuideText">Ab dem 1. Dezember schaut der Wichtel aus seiner Tür. Um Mitternacht hinterlässt er manchmal einen kleinen Streich. Ab dem 7. Dezember zählt die Uhr bis Heiligabend – mit Schnee, Elf und Weihnachtsmann.</p></div>
+        </article>
+        <article class="guide-card">
+          <span class="guide-icon" aria-hidden="true">✨</span>
+          <div><h3 data-i18n="yearGuideTitle">Das ganze Jahr</h3><p data-i18n="yearGuideText">Zu Silvester funkeln kleine Feuerwerke, im Frühling hoppelt der Osterhase, im Sommer flattern Schmetterlinge und im Herbst wird es spooky-cute.</p></div>
+        </article>
+      </div>
+    </section>
+
+    <div class="seasonal-extra" id="seasonal-extra" aria-hidden="true"></div>
+
+    <footer class="page-footer">
+      <span data-i18n="footerLeft">Mit einer Prise Glitzer gemacht</span>
+      <span class="footer-heart" aria-hidden="true">♡</span>
+      <span data-i18n="footerRight">und ganz viel Gemütlichkeit</span>
+    </footer>
+  </main>
+</body>
+</html>

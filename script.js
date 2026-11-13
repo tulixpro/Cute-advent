@@ -77,13 +77,55 @@ const houseElements = {
   close: document.querySelector("#room-close"),
   canvas: document.querySelector("#sled-canvas"),
   gameStatus: document.querySelector("#game-status"),
-// Dev menu toggle
+// Dev menu toggle - accessible with one click
 let devMenuOpen = false;
+let devMenuShowing = false;
 function toggleDevMenu() {
   devMenuOpen = !devMenuOpen;
+  devMenuShowing = true;
   elements.devMenu.hidden = !devMenuOpen;
   elements.devMenu.style.display = devMenuOpen ? "block" : "none";
   document.body.style.overflow = devMenuOpen ? "hidden" : "";
+  // Auto-hide after 10 seconds if opened via button (not Konami)
+  if (!devMenuOpen) {
+    setTimeout(() => {
+      if (devMenuShowing && !devMenuOpen) {
+        toggleDevMenu();
+        devMenuShowing = false;
+      }
+    }, 10000);
+  }
+}
+
+// Add dev menu button near house entry
+const devMenuButton = document.createElement("button");
+devMenuButton.className = "house-entry-button";
+devMenuButton.innerHTML = "🔧";
+devMenuButton.title = "Entwickler-Menü";
+devMenuButton.setAttribute("aria-label", "Entwickler-Menü öffnen");
+devMenuButton.addEventListener("click", (e) => {
+  e.stopPropagation();
+  toggleDevMenu();
+  devMenuShowing = true;
+  // Reset the auto-hide timer
+  setTimeout(() => {
+    if (devMenuShowing && !devMenuOpen) {
+      toggleDevMenu();
+      devMenuShowing = false;
+    }
+  }, 10000);
+});
+
+// Insert after house entry button in the HTML
+const houseEntry = document.querySelector(".house-entry-button");
+if (houseEntry) {
+  houseEntry.parentNode.insertBefore(devMenuButton, houseEntry.nextSibling);
+} else {
+  // If no house entry button, add at the top of the activity section
+  const activities = document.querySelector(".room-activities");
+  if (activities) {
+    activities.insertBefore(devMenuButton, activities.firstChild);
+  }
 }
 
 // Add click handlers for house windows for Easter eggs
@@ -510,10 +552,12 @@ function getSeason(now) {
   const month = now.getMonth();
   const day = now.getDate();
 
+  // Always show Nikolaus countdown from Nov 6 to Dec 6
   if (month === 10 || (month === 11 && day <= 6)) {
     return seasonWithCopy("nikolaus", localDate(year, 11, 6), "nikolaus");
   }
 
+  // Original season logic...
   if (month === 11 && day <= 23) {
     return seasonWithCopy("christmas", localDate(year, 11, 24), "christmas");
   }
@@ -612,6 +656,26 @@ function updatePage(now, season, atMidnight = false) {
 function updateCountdown(now, target) {
   let remaining = Math.max(0, target.getTime() - now.getTime());
   document.body.classList.toggle("last-24-hours", remaining > 0 && remaining <= 86400000);
+
+  // Update caption based on season
+  const seasonId = target.toISOString().split("T")[0].split("-");
+  const seasonMonth = parseInt(seasonId[1]);
+  const seasonDay = parseInt(seasonId[2]);
+
+  if (seasonMonth === 11 && seasonDay <= 6) {
+    elements.caption.textContent = "Bis zum Nikolaustag";
+    elements.caption.setAttribute("data-i18n", "");
+  } else if (seasonMonth === 11 && seasonDay <= 23) {
+    elements.caption.textContent = "Bis Weihnachten";
+    elements.caption.setAttribute("data-i18n", "countdownCaption");
+  } else if (seasonMonth === 11 && seasonDay >= 27) {
+    elements.caption.textContent = "Bis Neujahr";
+    elements.caption.setAttribute("data-i18n", "");
+  } else {
+    elements.caption.textContent = "Bis zur nächsten Saison";
+    elements.caption.setAttribute("data-i18n", "countdownCaption");
+  }
+}
   const valuesNow = {
     days: Math.floor(remaining / 86400000),
     hours: Math.floor((remaining % 86400000) / 3600000),

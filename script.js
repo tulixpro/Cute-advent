@@ -21,48 +21,166 @@ const elements = {
   hero: document.querySelector("#hero-layout"),
   flightLaugh: document.querySelector("#flight-laugh-text")
 };
-// Konami code sequence
-const konamiCode = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "KeyB", "KeyA"];
-let konamiIndex = 0;
-
-function handleKonamiKey(e) {
-  if (e.code === konamiCode[konamiIndex]) {
-    konamiIndex++;
-    if (konamiIndex === konamiCode.length) {
-      activateKonami();
-      konamiIndex = 0;
+// Initialize audio system after DOM is ready
+function initAudio() {
+  try {
+    elements.musicToggle = document.querySelector("#music-toggle");
+    if (elements.musicToggle) {
+      elements.musicToggle.addEventListener("click", toggleMusic);
     }
-  } else {
-    konamiIndex = 0;
+    // Create audio context on first user interaction
+    document.body.addEventListener("click", () => {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        isAudioEnabled = true;
+      }
+    });
+  } catch (e) {
+    // Audio not supported, continue without
   }
 }
 
-document.addEventListener("keydown", handleKonamiKey);
-
-function activateKonami() {
-  document.body.classList.add("konami-mode");
-  elements.konamiOverlay.hidden = false;
+// Generate a bell sound using Web Audio API
+function createBellSound(frequency, duration, volume) {
+  if (!audioContext || !isAudioEnabled) return;
   
-  // Create celebration effect
-  const celebration = document.createElement("div");
-  celebration.style.cssText = `
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1000;
-    background: var(--konami-celebration);
-    opacity: 0.8;
-  `;
-  document.body.appendChild(celebration);
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
   
-  setTimeout(() => {
-    document.body.classList.remove("konami-mode");
-    elements.konamiOverlay.hidden = true;
-    if (celebration.parentNode) {
-      celebration.parentNode.removeChild(celebration);
-    }
-  }, 1500);
+  oscillator.type = "sine";
+  oscillator.frequency.value = frequency;
+  gainNode.gain.value = volume;
+  
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + duration);
 }
+
+// Generate a simple melody (like "Jingle Bells" motif)
+function playJingleBellsPattern() {
+  if (!audioContext || !isAudioEnabled) return;
+  
+  const notes = [392, 523, 659, 784]; // G5, C6, E5, G5
+  const durations = [0.3, 0.3, 0.3, 1.0];
+  
+  const now = audioContext.currentTime;
+  
+  notes.forEach((note, index) => {
+    setTimeout(() => {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.type = "sine";
+      oscillator.frequency.value = note;
+      gainNode.gain.value = 0.1;
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.start();
+      oscillator.stop(now + durations[index]);
+    }, index * 200);
+  });
+}
+
+// Play a single bell chime
+function playBellChime() {
+  if (!audioContext || !isAudioEnabled) return;
+  
+  // Create a short bell-like sound
+  const oscillator1 = audioContext.createOscillator();
+  const oscillator2 = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  oscillator1.type = "square";
+  oscillator1.frequency.value = 523; // C5
+  
+  oscillator2.type = "triangle";
+  oscillator2.frequency.value = 659; // E5
+  
+  gainNode.gain.value = 0.15;
+  
+  oscillator1.connect(gainNode);
+  oscillator2.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  oscillator1.start();
+  oscillator2.start();
+  
+  // Add some decay
+  setTimeout(() => {
+    oscillator1.stop();
+    oscillator2.stop();
+  }, 300);
+}
+
+// Global sound control
+let isSoundEnabled = true;
+
+function toggleSound() {
+  isSoundEnabled = !isSoundEnabled;
+  if (elements.sound) {
+    elements.sound.textContent = isSoundEnabled ? "🔔" : "🔇";
+    elements.sound.title = isSoundEnabled ? "Sound an" : "Sound aus";
+  }
+}
+
+// Initialize audio on first user interaction
+let audioContext = null;
+let isAudioEnabled = false;
+
+document.body.addEventListener("click", () => {
+  if (!audioContext) {
+    try {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      isAudioEnabled = true;
+    } catch (e) {
+      // Audio not supported
+    }
+  }
+});
+
+// Make playSound available globally
+window.playSound = function(soundType) {
+  if (!isSoundEnabled || !audioContext) return;
+  
+  switch(soundType) {
+    case "bell":
+      playBellChime();
+      break;
+    case "click":
+      // Simple click sound
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.value = 1000;
+      gainNode.gain.value = 0.05;
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 0.05);
+      break;
+    case "magic":
+      // Magical chime sound
+      createBellSound(523, 0.5, 0.1);
+      break;
+    case "success":
+      // Success sound
+      createBellSound(659, 0.3, 0.1);
+      break;
+  }
+};
+
+// Export initAudio for use on DOM ready
+window.initAudio = initAudio;
+
+// Make isAudioEnabled accessible
+window.isAudioEnabled = isAudioEnabled;
+
+// Initialisiere Audio beim Laden
+document.addEventListener("DOMContentLoaded", initAudio);
 
 const values = {
   days: document.querySelector("#days"),
@@ -552,12 +670,10 @@ function getSeason(now) {
   const month = now.getMonth();
   const day = now.getDate();
 
-  // Always show Nikolaus countdown from Nov 6 to Dec 6
   if (month === 10 || (month === 11 && day <= 6)) {
     return seasonWithCopy("nikolaus", localDate(year, 11, 6), "nikolaus");
   }
 
-  // Original season logic...
   if (month === 11 && day <= 23) {
     return seasonWithCopy("christmas", localDate(year, 11, 24), "christmas");
   }
@@ -656,25 +772,6 @@ function updatePage(now, season, atMidnight = false) {
 function updateCountdown(now, target) {
   let remaining = Math.max(0, target.getTime() - now.getTime());
   document.body.classList.toggle("last-24-hours", remaining > 0 && remaining <= 86400000);
-
-  // Update caption based on season
-  const seasonId = target.toISOString().split("T")[0].split("-");
-  const seasonMonth = parseInt(seasonId[1]);
-  const seasonDay = parseInt(seasonId[2]);
-
-  if (seasonMonth === 11 && seasonDay <= 6) {
-    elements.caption.textContent = "Bis zum Nikolaustag";
-    elements.caption.setAttribute("data-i18n", "");
-  } else if (seasonMonth === 11 && seasonDay <= 23) {
-    elements.caption.textContent = "Bis Weihnachten";
-    elements.caption.setAttribute("data-i18n", "countdownCaption");
-  } else if (seasonMonth === 11 && seasonDay >= 27) {
-    elements.caption.textContent = "Bis Neujahr";
-    elements.caption.setAttribute("data-i18n", "");
-  } else {
-    elements.caption.textContent = "Bis zur nächsten Saison";
-    elements.caption.setAttribute("data-i18n", "countdownCaption");
-  }
 }
   const valuesNow = {
     days: Math.floor(remaining / 86400000),

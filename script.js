@@ -21,6 +21,48 @@ const elements = {
   hero: document.querySelector("#hero-layout"),
   flightLaugh: document.querySelector("#flight-laugh-text")
 };
+// Konami code sequence
+const konamiCode = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "KeyB", "KeyA"];
+let konamiIndex = 0;
+
+function handleKonamiKey(e) {
+  if (e.code === konamiCode[konamiIndex]) {
+    konamiIndex++;
+    if (konamiIndex === konamiCode.length) {
+      activateKonami();
+      konamiIndex = 0;
+    }
+  } else {
+    konamiIndex = 0;
+  }
+}
+
+document.addEventListener("keydown", handleKonamiKey);
+
+function activateKonami() {
+  document.body.classList.add("konami-mode");
+  elements.konamiOverlay.hidden = false;
+  
+  // Create celebration effect
+  const celebration = document.createElement("div");
+  celebration.style.cssText = `
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1000;
+    background: var(--konami-celebration);
+    opacity: 0.8;
+  `;
+  document.body.appendChild(celebration);
+  
+  setTimeout(() => {
+    document.body.classList.remove("konami-mode");
+    elements.konamiOverlay.hidden = true;
+    if (celebration.parentNode) {
+      celebration.parentNode.removeChild(celebration);
+    }
+  }, 1500);
+}
 
 const values = {
   days: document.querySelector("#days"),
@@ -35,6 +77,134 @@ const houseElements = {
   close: document.querySelector("#room-close"),
   canvas: document.querySelector("#sled-canvas"),
   gameStatus: document.querySelector("#game-status"),
+// Dev menu toggle
+let devMenuOpen = false;
+function toggleDevMenu() {
+  devMenuOpen = !devMenuOpen;
+  elements.devMenu.hidden = !devMenuOpen;
+  elements.devMenu.style.display = devMenuOpen ? "block" : "none";
+  document.body.style.overflow = devMenuOpen ? "hidden" : "";
+}
+
+// Add click handlers for house windows for Easter eggs
+// Use a single event listener on the parent for efficiency
+let windowClickCounts = {};
+elements.windows.forEach((window, idx) => {
+  window.setAttribute("data-window-index", idx);
+});
+
+elements.windows.parentElement.addEventListener("click", (e) => {
+  const window = e.target.closest(".house-window");
+  if (!window) return;
+  
+  windowClickCounts[window.getAttribute("data-window-index")] = 
+    (windowClickCounts[window.getAttribute("data-window-index")] || 0) + 1;
+  
+  window.classList.add("window-glow");
+  window.style.boxShadow = "0 0 30px rgba(255, 107, 107, 0.5)";
+  
+  // Secret: 3 window clicks open secret note
+  if (windowClickCounts[window.getAttribute("data-window-index")] >= 3) {
+    windowClickCounts[window.getAttribute("data-window-index")] = 0;
+    showSecretNote();
+  }
+  
+  // Reset glow after animation
+  setTimeout(() => {
+    window.style.boxShadow = "";
+  }, 1500);
+});
+
+function showSecretNote() {
+  const secretNotes = [
+    "🎄 Frohe Weihnachten!",
+    "✨ Frohe Ostern!",
+    "🎃 Happy Halloween!",
+    "❄️ Frohes Neues Jahr!",
+    "🌸 Fröhlichen Frühling!"
+  ];
+  const note = secretNotes[Math.floor(Math.random() * secretNotes.length)];
+  elements.note.textContent = note;
+  elements.note.hidden = false;
+  playChime("bell");
+  
+  setTimeout(() => {
+    elements.note.hidden = true;
+  }, 5000);
+}
+
+// Doorbell Easter egg
+const doorbell = document.querySelector(".doorbell");
+let doorbellCount = 0;
+if (doorbell) {
+  doorbell.addEventListener("click", () => {
+    doorbellCount++;
+    if (doorbellCount >= 3) {
+      doorbellCount = 0;
+      document.body.classList.add("easter-egg-active");
+      setTimeout(() => {
+        document.body.classList.remove("easter-egg-active");
+      }, 3000);
+      playChime("sleigh");
+      showSanta();
+    }
+  });
+}
+
+// Secret: Konami code reveals special messages in console
+function revealSecretMessages() {
+  const messages = [
+    "🔑 Konami code aktiviert! Geheimmodus an.",
+    "✨ Willkommen in der versteckten Edition!",
+    "🎄 Frohe Weihnachten und frohes neues Jahr!",
+    "❄️ Schnee ist schön, aber Code ist cooler.",
+    "🌟 Ihr habt das Geheimnis gelüftet!"
+  ];
+  const el = document.createElement("div");
+  el.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: var(--card);
+    border: 1px solid var(--muted);
+    padding: 12px 16px;
+    border-radius: 8px;
+    z-index: 1000;
+    font-size: 12px;
+    animation: slide-in 0.5s ease-out;
+  `;
+  el.textContent = messages[Math.floor(Math.random() * messages.length)];
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 5000);
+}
+
+function activateKonami() {
+  document.body.classList.add("konami-mode");
+  elements.konamiOverlay.hidden = false;
+  
+  // Create celebration effect
+  const celebration = document.createElement("div");
+  celebration.style.cssText = `
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1000;
+    background: var(--konami-celebration);
+    opacity: 0.8;
+  `;
+  document.body.appendChild(celebration);
+  
+  // Reveal secret message
+  revealSecretMessages();
+  
+  setTimeout(() => {
+    document.body.classList.remove("konami-mode");
+    elements.konamiOverlay.hidden = true;
+    if (celebration.parentNode) {
+      celebration.parentNode.removeChild(celebration);
+    }
+  }, 1500);
+}
   console: document.querySelector("#console-power"),
   consoleLabel: document.querySelector("#tv-caption"),
   screenPrompt: document.querySelector("#tv-prompt"),
@@ -1142,6 +1312,78 @@ function openCalendarDoor(day) {
     // The opened door remains visible until the page is closed if storage is unavailable.
   }
   updateCalendar(now);
+function openCalendarDoor(day) {
+  const now = new Date();
+  const availableDay = now.getMonth() === 11 ? Math.min(now.getDate(), 24) : 0;
+  if (day > availableDay) {
+    houseElements.calendarNote.textContent = translations[language].calendarLocked;
+    houseElements.calendarNote.hidden = false;
+    return;
+  }
+
+  selectedCalendarDay = day;
+  openedCalendarDoors.add(day);
+  try {
+    localStorage.setItem(`jahreszeiten-advent-${openedCalendarYear}`, JSON.stringify([...openedCalendarDoors]));
+  } catch {
+    // The opened door remains visible until the page is closed if storage is unavailable.
+  }
+  updateCalendar(now);
+
+  // Bonus Easter eggs for specific doors
+  const bonusDoors = [5, 12, 19]; // Special doors with extra surprises
+  if (bonusDoors.includes(day) && !doorHasBonus(day)) {
+    triggerDoorBonus(day);
+  }
+}
+
+function doorHasBonus(day) {
+  const saved = localStorage.getItem(`jahreszeiten-advent-bonus-${openedCalendarYear}`);
+  if (saved) {
+    const bonuses = JSON.parse(saved);
+    return bonuses.includes(day);
+  }
+  return false;
+}
+
+function triggerDoorBonus(day) {
+  // Mark the door as having a bonus
+  const saved = localStorage.getItem(`jahreszeiten-advent-bonus-${openedCalendarYear}`);
+  let bonuses = saved ? JSON.parse(saved) : [];
+  if (!bonuses.includes(day)) {
+    bonuses.push(day);
+    try {
+      localStorage.setItem(`jahreszeiten-advent-bonus-${openedCalendarYear}`, JSON.stringify(bonuses));
+    } catch {
+      // Bonus remains for this visit if storage is unavailable.
+    }
+  }
+
+  // Add special class to the door element
+  const doors = houseElements.calendar.querySelectorAll(`.calendar-door[data-day="${day}"]`);
+  doors.forEach((door) => {
+    door.classList.add("special");
+    door.classList.add("bonus");
+    
+    // Play special chime
+    playChime("bell");
+    
+    // Show special note after short delay
+    setTimeout(() => {
+      const bonusNotes = [
+        "🎄 Ein kleiner Wunsch geht in Erfüllung!",
+        "✨ Ein funkelnder Moment der Freude!",
+        "🎁 Eine versteckte Überraschung wartet!",
+        "❄️ Eine kleine Winter-Magie entfaltet sich!",
+        "🌟 Ein strahlender Glücksmoment!"
+      ];
+      const note = bonusNotes[day % bonusNotes.length];
+      elements.calendarNote.textContent = note;
+      elements.calendarNote.hidden = false;
+      elements.calendarNote.style.animation = "note-pop 300ms ease both";
+    }, 500);
+  });
+}
 }
 
 houseElements.entry.addEventListener("click", () => {

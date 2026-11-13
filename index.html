@@ -2,14 +2,20 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#fffaf4">
-  <meta name="description" content="Ein kleiner, kuscheliger Countdown durch die Jahreszeiten – mit seltenen Überraschungen.">
+  <meta name="description" content="Ein kleiner, kuscheliger Countdown durch die Jahreszeiten – mit seltenen Überraschungen und versteckten Easter Eggs.">
   <title>Kleine Jahreszeiten-Magie</title>
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
 <body>
+  <!-- Konami Code overlay -->
+  <div class="konami-overlay" id="konami-overlay" aria-hidden="true">
+    <span class="konami-message" aria-hidden="true">Geheimmodus aktiviert!</span>
+  </div>
+
   <div class="season-wash" aria-hidden="true"></div>
   <div class="night-scenery" aria-hidden="true">
     <svg viewBox="0 0 1600 520" preserveAspectRatio="xMidYMax slice">
@@ -85,10 +91,10 @@
 
   <main class="page">
     <header class="topbar">
-      <a class="brand" href="#" aria-label="Kleine Jahreszeiten-Magie – Startseite">
-        <span class="brand-mark" aria-hidden="true">✿</span>
-          <span data-i18n="brand">Kleine Jahreszeiten-Magie</span>
-      </a>
+      <a class="brand" href="#" aria-label="Jahreszeiten-Magie – Startseite">
+          <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v8c0 6 8 10 8 10z" /></svg>
+          <strong class="brand-name" aria-hidden="true">Jahreszeiten-Magie</strong>
+        </a>
         <div class="topbar-tools">
           <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="false" title="Ton einschalten" aria-label="Ton einschalten">🔇</button>
           <label class="language-picker">
@@ -110,14 +116,14 @@
 
       <div class="countdown" id="countdown" aria-label="Countdown">
         <div class="time-unit"><span class="time-value" id="days">00</span><span class="time-label" data-i18n="days">Tage</span></div>
-        <span class="time-divider" aria-hidden="true">·</span>
+        <span class="time-divider">:</span>
         <div class="time-unit"><span class="time-value" id="hours">00</span><span class="time-label" data-i18n="hours">Stunden</span></div>
-        <span class="time-divider" aria-hidden="true">·</span>
+        <span class="time-divider">:</span>
         <div class="time-unit"><span class="time-value" id="minutes">00</span><span class="time-label" data-i18n="minutes">Minuten</span></div>
-        <span class="time-divider" aria-hidden="true">·</span>
+        <span class="time-divider">:</span>
         <div class="time-unit"><span class="time-value" id="seconds">00</span><span class="time-label" data-i18n="seconds">Sekunden</span></div>
       </div>
-      <p class="countdown-caption" id="countdown-caption">bis zum nächsten Lieblingsmoment</p>
+      <p class="countdown-caption" id="countdown-caption" data-i18n="countdownCaption">Bis zur nächsten Saison</p>
 
       <div class="season-art" aria-hidden="true">
         <span class="season-art-backdrop"></span>
@@ -161,9 +167,9 @@
         <path class="chimney" d="M329 96V57H357V116Z"/>
         <path class="chimney-cap" d="M324 57H362V67H324Z"/>
         <path class="gable" d="M208 112 260 77 312 112Z"/>
-        <rect class="house-window" x="170" y="157" width="46" height="48" rx="8"/>
+        <rect class="house-window" x="170" y="157" width="46" height="48" rx="8" data-easter="window-glow"/>
         <path class="window-frame" d="M193 158V204M171 181H215"/>
-        <rect class="house-window" x="304" y="157" width="46" height="48" rx="8"/>
+        <rect class="house-window" x="304" y="157" width="46" height="48" rx="8" data-easter="window-glow"/>
         <path class="window-frame" d="M327 158V204M305 181H349"/>
         <path class="door" d="M235 190Q260 177 285 190V261H235Z"/>
         <circle class="door-knob" cx="276" cy="228" r="3"/>
@@ -199,7 +205,7 @@
           <circle class="santa-nose" cx="331" cy="199" r="2.2"/>
           <path class="santa-boot" d="M312 257H325Q327 262 321 264H309Z"/>
           <path class="santa-boot" d="M332 257H344Q346 262 340 264H329Z"/>
-          <circle class="doorbell" cx="306" cy="207" r="3"/>
+          <circle class="doorbell" cx="306" cy="207" r="3" data-easter="ring-bell"></circle>
           <path class="bell-glint" d="M303 200 301 196M309 200 311 196"/>
         </g>
         <circle class="scene-snow snow-a" cx="90" cy="208" r="3"/>
@@ -302,5 +308,23 @@
       <span data-i18n="footerRight">und ganz viel Gemütlichkeit</span>
     </footer>
   </main>
+<!-- Secret development menu -->
+  <div class="dev-menu" id="dev-menu" aria-hidden="true" role="dialog" aria-label="Entwickler-Menü">
+    <div class="dev-menu-content">
+      <h3>Entwickler-Menü</h3>
+      <button class="dev-close" aria-label="Schließen" aria-hidden="true">×</button>
+      <ul>
+        <li><button class="dev-btn" data-action="reset-seasons">Saisons zurücksetzen</button></li>
+        <li><button class="dev-btn" data-action="toggle-nightmode">Night Mode force</button></li>
+        <li><button class="dev-btn" data-action="spawn-santa">Santa sofort erscheinen</button></li>
+        <li><button class="dev-btn" data-action="all-easter-eggs">Alle Easter Eggs aktivieren</button></li>
+        <li><button class="dev-btn" data-action="debug-info">Debug-Informationen</button></li>
+      </ul>
+    </div>
+  </div>
+<!-- Cute particles -->
+<div class="particle heart-particle" aria-hidden="true">♥</div>
+<div class="particle star-particle" aria-hidden="true">✦</div>
+<div class="particle snow-particle" aria-hidden="true">✼</div>
 </body>
 </html>

@@ -8,7 +8,10 @@
   --accent: #eaa4b6;
   --accent-soft: #fdebf0;
   --shadow: 0 24px 70px rgba(111, 81, 93, 0.12);
-  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  --font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  --konami-active: #ff6b6b;
+  --konami-celebration: #ffd93d;
+  --season-transition: 2400ms cubic-bezier(.2,.7,.25,1);
 }
 
 * { box-sizing: border-box; }
@@ -21,10 +24,10 @@ body {
   overflow-x: hidden;
   color: var(--ink);
   background: var(--cream);
-  transition: background-color 2400ms cubic-bezier(.2,.7,.25,1), color 1400ms ease;
+  transition: var(--season-transition);
 }
 
-body.night-mode { background: #222640; }
+body.night-mode { background: #222640; transition: background-color var(--season-transition); }
 
 button, a { font: inherit; }
 
@@ -118,6 +121,12 @@ body.night-mode .cozy-scene { filter: drop-shadow(0 10px 24px rgba(13, 16, 40, .
 body.night-mode .page-footer { color: #817687; background: rgba(255,250,244,.94); }
 body.night-mode .countdown-caption,
 body.night-mode .intro { color: #887f98; }
+
+body.konami-mode {
+  --accent: var(--konami-active);
+  --accent-soft: rgba(255, 107, 107, 0.15);
+  transition: --accent var(--season-transition), --accent-soft var(--season-transition);
+}
 
 .page {
   position: relative;
@@ -853,6 +862,21 @@ body.snow-season .snowfall { opacity: 1; }
 @keyframes backdrop-arrive { from { opacity: 0; } to { opacity: 1; } }
 @keyframes window-snow-drift { from { transform: translate3d(-4px, -2px, 0); } to { transform: translate3d(6px, 9px, 0); } }
 
+@keyframes konami-celebration {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.1) translateY(-8px); }
+}
+
+@keyframes window-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 107, 0.4); }
+  50% { box-shadow: 0 0 30px rgba(255, 217, 61, 0.6), 0 0 40px rgba(255, 107, 107, 0.5); }
+}
+
+@keyframes konami-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+
 @media (max-width: 600px) {
   .page { width: min(100% - 26px, 480px); }
   .topbar { flex-wrap: wrap; padding: 17px 0; }
@@ -947,4 +971,127 @@ body.snow-season .snowfall { opacity: 1; }
     transition-duration: 0.01ms !important;
   }
   .snowfall { display: none; }
+}
+
+/* Easter egg window glow */
+.window-glow {
+  animation: window-glow 2s ease-in-out infinite;
+/* Advent calendar bonus styles */
+.wall-calendar .calendar-door.bonus { animation: door-bonus 0.5s ease-out; }
+.wall-calendar .calendar-door.special { border-color: #ff6b6b; background: linear-gradient(145d, #ffd1d1, #ffc1c1); color: #e81123; box-shadow: 0 0 15px rgba(255, 107, 107, 0.3); }
+@keyframes door-bonus {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.1) translateY(-3px); }
+/* Cute floating particles */
+@keyframes float {
+/* Cute floating particles */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  /* IE10+ specific styles */
+  .particle { display: none; }
+  .konami-overlay { display: none; }
+  .dev-menu { display: none; }
+  .window-glow { animation: none; }
+  .calendar-door.special { border-color: #83624f; background: linear-gradient(145deg, #fff2d6, #f5d6b4); color: #83624f; box-shadow: none; }
+  .calendar-door.bonus { animation: none; }
+}
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+.particle {
+  position: fixed;
+  pointer-events: none;
+  font-size: 12px;
+  z-index: 5;
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Heart particle */
+.heart-particle {
+  color: #eaa4b6;
+  animation-duration: 8s;
+}
+
+/* Star particle */
+.star-particle {
+  color: #fff;
+  animation-duration: 10s;
+}
+
+/* Snowflake particle */
+.snow-particle {
+  color: #fff;
+  animation-duration: 12s;
+  font-size: 10px;
+}
+
+/* Cute floating clouds */
+@keyframes drift {
+  0%, 100% { transform: translateX(-100%); }
+  100% { transform: translateX(110%); }
+}
+
+.cloud {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1;
+  animation: drift 20s linear infinite;
+  font-size: 24px;
+}
+
+/* Secret message slide-in */
+.secret-message {
+  animation: slide-in 0.5s ease-out;
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+.particle {
+  position: fixed;
+  pointer-events: none;
+  font-size: 12px;
+  z-index: 5;
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Heart particle */
+.heart-particle {
+  color: #eaa4b6;
+  animation-duration: 8s;
+}
+
+/* Star particle */
+.star-particle {
+  color: #fff;
+  animation-duration: 10s;
+}
+
+/* Snowflake particle */
+.snow-particle {
+  color: #fff;
+  animation-duration: 12s;
+  font-size: 10px;
+}
+
+/* Cute floating clouds */
+@keyframes drift {
+  0%, 100% { transform: translateX(-100%); }
+  100% { transform: translateX(110%); }
+}
+
+.cloud {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1;
+  animation: drift 20s linear infinite;
+  font-size: 24px;
+}
+}
 }

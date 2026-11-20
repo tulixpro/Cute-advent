@@ -973,125 +973,63 @@ body.snow-season .snowfall { opacity: 1; }
   .snowfall { display: none; }
 }
 
-/* Easter egg window glow */
-.window-glow {
-  animation: window-glow 2s ease-in-out infinite;
-/* Advent calendar bonus styles */
-.wall-calendar .calendar-door.bonus { animation: door-bonus 0.5s ease-out; }
-.wall-calendar .calendar-door.special { border-color: #ff6b6b; background: linear-gradient(145d, #ffd1d1, #ffc1c1); color: #e81123; box-shadow: 0 0 15px rgba(255, 107, 107, 0.3); }
-@keyframes door-bonus {
-  0%, 100% { transform: scale(1) translateY(0); }
-  50% { transform: scale(1.1) translateY(-3px); }
-/* Cute floating particles */
-@keyframes float {
-/* Cute floating particles */
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-  /* IE10+ specific styles */
-  .particle { display: none; }
-  .konami-overlay { display: none; }
-  .dev-menu { display: none; }
-  .window-glow { animation: none; }
-  .calendar-door.special { border-color: #83624f; background: linear-gradient(145deg, #fff2d6, #f5d6b4); color: #83624f; box-shadow: none; }
-  .calendar-door.bonus { animation: none; }
-}
-  50% { transform: translateY(-20px) rotate(180deg); }
-}
+/* Repaired decorative styles */
+.window-glow { animation: window-glow 2s ease-in-out infinite; }
+.wall-calendar .calendar-door.bonus { animation: door-bonus .5s ease-out; border-color:#e7b45e; box-shadow:0 0 14px rgba(231,180,94,.45); }
+@keyframes door-bonus { 0%,100% { transform:scale(1) translateY(0); } 50% { transform:scale(1.1) translateY(-3px); } }
+@keyframes float { 0%,100% { transform:translateY(0) rotate(0deg); } 50% { transform:translateY(-20px) rotate(180deg); } }
+.particle { position:fixed; pointer-events:none; font-size:12px; z-index:5; animation:float 6s ease-in-out infinite; }
+.heart-particle { color:#eaa4b6; animation-duration:8s; }
+.star-particle { color:#fff; animation-duration:10s; }
+.snow-particle { color:#fff; animation-duration:12s; font-size:10px; }
+@keyframes drift { 0% { transform:translateX(-100%); } 100% { transform:translateX(110%); } }
+.cloud { position:fixed; pointer-events:none; z-index:1; animation:drift 20s linear infinite; font-size:24px; }
+.secret-message { animation:slide-in .5s ease-out; }
+@keyframes slide-in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 
-.particle {
-  position: fixed;
-  pointer-events: none;
-  font-size: 12px;
-  z-index: 5;
-  animation: float 6s ease-in-out infinite;
+/* Put the house entrance directly below the illustration instead of floating over the page. */
+.house-entry-button {
+  position:relative;
+  top:auto;
+  right:auto;
+  bottom:auto;
+  z-index:6;
+  display:flex;
+  width:max-content;
+  max-width:100%;
+  min-height:50px;
+  margin:4px auto 30px;
+  padding:0 22px;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  border:1px solid rgba(255,255,255,.95);
+  border-radius:18px 18px 7px 18px;
+  color:#765d69;
+  background:linear-gradient(145deg,#fffdfa,#fff0dc);
+  box-shadow:0 12px 30px rgba(65,53,78,.17),inset 0 1px #fff;
+  cursor:pointer;
+  font-size:13px;
+  font-weight:800;
+  transform:none;
 }
-
-/* Heart particle */
-.heart-particle {
-  color: #eaa4b6;
-  animation-duration: 8s;
+.house-entry-button:hover { transform:translateY(-3px); box-shadow:0 16px 34px rgba(65,53,78,.22); }
+.house-entry-button:active { transform:scale(.97); }
+.house-entry-arrow { color:#d29d6d; font-size:17px; }
+.cozy-scene { filter:drop-shadow(0 14px 18px rgba(105,86,98,.12)); }
+.scene-hill { filter:drop-shadow(0 -7px 12px rgba(255,255,255,.55)); }
+.house-body { filter:drop-shadow(0 7px 6px rgba(108,79,78,.12)); }
+body.christmas-day .countdown-card { border-color:#f0d3bd; box-shadow:0 25px 75px rgba(151,76,76,.17); }
+body.christmas-day .season-art-backdrop { background:#fbe7e9; }
+body.christmas-day .countdown { background:#fff4ee; border-color:#f5d8c8; }
+@media (max-width:600px) {
+  .house-entry-button { position:relative; top:auto; right:auto; bottom:auto; margin:0 auto 24px; min-height:48px; padding:0 19px; border-radius:16px 16px 6px 16px; transform:none; font-size:12px; }
+  .house-entry-button:hover { transform:translateY(-2px); }
+  .house-entry-button:active { transform:scale(.97); }
 }
-
-/* Star particle */
-.star-particle {
-  color: #fff;
-  animation-duration: 10s;
+@media (max-width:350px) {
+  .house-entry-button { right:auto; bottom:auto; min-height:44px; font-size:11px; }
 }
-
-/* Snowflake particle */
-.snow-particle {
-  color: #fff;
-  animation-duration: 12s;
-  font-size: 10px;
-}
-
-/* Cute floating clouds */
-@keyframes drift {
-  0%, 100% { transform: translateX(-100%); }
-  100% { transform: translateX(110%); }
-}
-
-.cloud {
-  position: fixed;
-  pointer-events: none;
-  z-index: 1;
-  animation: drift 20s linear infinite;
-  font-size: 24px;
-}
-
-/* Secret message slide-in */
-.secret-message {
-  animation: slide-in 0.5s ease-out;
-}
-
-@keyframes slide-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(180deg); }
-}
-
-.particle {
-  position: fixed;
-  pointer-events: none;
-  font-size: 12px;
-  z-index: 5;
-  animation: float 6s ease-in-out infinite;
-}
-
-/* Heart particle */
-.heart-particle {
-  color: #eaa4b6;
-  animation-duration: 8s;
-}
-
-/* Star particle */
-.star-particle {
-  color: #fff;
-  animation-duration: 10s;
-}
-
-/* Snowflake particle */
-.snow-particle {
-  color: #fff;
-  animation-duration: 12s;
-  font-size: 10px;
-}
-
-/* Cute floating clouds */
-@keyframes drift {
-  0%, 100% { transform: translateX(-100%); }
-  100% { transform: translateX(110%); }
-}
-
-.cloud {
-  position: fixed;
-  pointer-events: none;
-  z-index: 1;
-  animation: drift 20s linear infinite;
-  font-size: 24px;
-}
-}
+@media (prefers-reduced-motion:reduce) {
+  .particle,.snowflake,.santa-figure,.santa-flight { animation:none !important; }
 }

@@ -1150,3 +1150,29 @@ button:focus-visible, a:focus-visible, select:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .guide-card { transition: none; }
 }
+
+
+/* Extra Wichtelzauber für den Nikolaus-Countdown */
+.elf-note {
+  display: inline-flex;
+  max-width: min(100%, 430px);
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 11px 17px;
+  border: 1px solid #f4d9bd;
+  border-radius: 18px 18px 18px 5px;
+  color: #89664e;
+  background: linear-gradient(135deg, #fff8e9, #fff0f4 58%, #f0f5ff);
+  box-shadow: 0 8px 22px rgba(183, 139, 115, .13), inset 0 1px rgba(255,255,255,.9);
+  font-size: 12px;
+  line-height: 1.55;
+  transform: rotate(-1deg);
+}
+.elf-note::before { content: "🧝"; font-size: 21px; }
+.elf-note::after { content: "✦"; color: #e7b95f; font-size: 16px; }
+body.snow-season .season-art-backdrop {
+  background: radial-gradient(circle at 35% 30%, #fff8dc, #fce8ef 58%, #e8efff);
+}
+body.snow-season .season-art-emoji { filter: drop-shadow(0 9px 8px rgba(139, 104, 105, .18)); }
